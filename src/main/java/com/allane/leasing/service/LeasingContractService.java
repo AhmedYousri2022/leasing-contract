@@ -84,7 +84,7 @@ public class LeasingContractService {
             vehicle.setAssigned(false);
             leasingContract.setVehicle(null);
         } else {
-            throw new AssociatedException("the vehicle already assigned to the contract");
+            throw new AssociatedException("The vehicle already assigned to the contract");
         }
     }
 
