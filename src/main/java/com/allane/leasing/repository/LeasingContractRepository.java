@@ -10,10 +10,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface LeasingContractRepository extends JpaRepository<LeasingContract, UUID> {
 
-    Optional<LeasingContract> findLeasingContractByContractNumber(int contractNumber);
-    Optional<LeasingContract> findLeasingContractByVehicleId(UUID vehicleId);
-    Optional<LeasingContract> findLeasingContractByContractNumberAndVehicleId(int contractNumber, UUID vehicleId);
-    Optional<LeasingContract> findLeasingContractByContractNumberAndCustomerId(int contractNumber, UUID customerId);
+    Optional<LeasingContract> findLeasingContractByIdAndVehicleId(UUID leasingContractId, UUID vehicleId);
 
-
+    Optional<LeasingContract> findLeasingContractByIdAndCustomerId(UUID leasingContractId, UUID customerId);
 }

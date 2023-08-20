@@ -169,15 +169,15 @@ public class LeasingContractService {
     }
 
     private boolean isVehicleAssociatedToTheContract(LeasingContract leasingContract, UUID vehicleId) {
-        Optional<LeasingContract> contract = leasingContractRepository.findLeasingContractByContractNumberAndVehicleId(
-                leasingContract.getContractNumber(), vehicleId);
+        Optional<LeasingContract> contract = leasingContractRepository.findLeasingContractByIdAndVehicleId(
+                leasingContract.getId(), vehicleId);
 
         return contract.isPresent();
     }
 
     private boolean isCustomerAssignedToContract(LeasingContract leasingContract, UUID customerId) {
-        Optional<LeasingContract> contract = leasingContractRepository.findLeasingContractByContractNumberAndCustomerId(
-                leasingContract.getContractNumber(), customerId);
+        Optional<LeasingContract> contract = leasingContractRepository.findLeasingContractByIdAndCustomerId(
+                leasingContract.getId(), customerId);
         return contract.isPresent();
     }
 
