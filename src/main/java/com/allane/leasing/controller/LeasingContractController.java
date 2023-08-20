@@ -6,9 +6,9 @@ import java.util.UUID;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
-import com.allane.leasing.dto.ContractOverviewResponseDto;
 import com.allane.leasing.dto.customer.CustomerDetailsResponseDto;
 import com.allane.leasing.dto.leasingcontract.ContractOverviewDetailsResponseDto;
+import com.allane.leasing.dto.leasingcontract.ContractOverviewResponseDto;
 import com.allane.leasing.dto.leasingcontract.LeasingContractDetailsResponseDto;
 import com.allane.leasing.dto.leasingcontract.LeasingContractRequestDto;
 import com.allane.leasing.dto.leasingcontract.LeasingContractUpdateRequestDto;
@@ -39,13 +39,13 @@ public class LeasingContractController {
     }
 
     @GetMapping(path = "/details/{leasingContractId}")
-    public ContractOverviewDetailsResponseDto getLeasingContractsOverviewDetails(@NotNull @PathVariable UUID leasingContractId) {
+    public ContractOverviewDetailsResponseDto getLeasingContractOverviewDetails(@NotNull @PathVariable UUID leasingContractId) {
         return service.getLeasingContractsOverviewDetails(leasingContractId);
     }
 
-    @GetMapping(path = "/{contractNumber}")
-    public LeasingContractDetailsResponseDto getLeasingContract(@NotNull @PathVariable int contractNumber) {
-        return service.getLeasingContractDetails(contractNumber);
+    @GetMapping(path = "/{leasingContractId}")
+    public LeasingContractDetailsResponseDto getLeasingContract(@NotNull @PathVariable UUID leasingContractId) {
+        return service.getLeasingContractDetails(leasingContractId);
     }
 
     @PostMapping
@@ -55,27 +55,27 @@ public class LeasingContractController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @PostMapping(path = "/assign/{contractNumber}/vehicle/{vehicleId}")
-    public void assignVehicle(@PathVariable int contractNumber, @PathVariable UUID vehicleId) {
-        service.assignVehicle(contractNumber, vehicleId);
+    @PostMapping(path = "/assign/{leasingContractId}/vehicle/{vehicleId}")
+    public void assignVehicle(@PathVariable UUID leasingContractId, @PathVariable UUID vehicleId) {
+        service.assignVehicle(leasingContractId, vehicleId);
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @PostMapping(path = "/unassign/{contractNumber}/vehicle/{vehicleId}")
-    public void unAssignVehicle(@PathVariable int contractNumber, @PathVariable UUID vehicleId) {
-        service.unAssignVehicle(contractNumber, vehicleId);
+    @PostMapping(path = "/unassign/{leasingContractId}/vehicle/{vehicleId}")
+    public void unAssignVehicle(@PathVariable UUID leasingContractId, @PathVariable UUID vehicleId) {
+        service.unAssignVehicle(leasingContractId, vehicleId);
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @PostMapping(path = "/assign/{contractNumber}/customer/{customerId}")
-    public void assignCustomer(@PathVariable int contractNumber, @PathVariable UUID customerId) {
-        service.assignCustomer(contractNumber, customerId);
+    @PostMapping(path = "/assign/{leasingContractId}/customer/{customerId}")
+    public void assignCustomer(@PathVariable UUID leasingContractId, @PathVariable UUID customerId) {
+        service.assignCustomer(leasingContractId, customerId);
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @PostMapping(path = "/unassign/{contractNumber}/customer/{customerId}")
-    public void unAssignCustomer(@PathVariable int contractNumber, @PathVariable UUID customerId) {
-        service.unAssignCustomer(contractNumber, customerId);
+    @PostMapping(path = "/unassign/{leasingContractId}/customer/{customerId}")
+    public void unAssignCustomer(@PathVariable UUID leasingContractId, @PathVariable UUID customerId) {
+        service.unAssignCustomer(leasingContractId, customerId);
     }
 
     @PutMapping(path = "/{leasingContractId}")
@@ -84,13 +84,13 @@ public class LeasingContractController {
         return service.updateLeasingContract(leasingContractId, dto);
     }
 
-        @GetMapping(path = "/{leasingContractId}/customer/{customerId}")
-        public CustomerDetailsResponseDto getCustomerDetails(@PathVariable UUID leasingContractId, @PathVariable UUID customerId) {
-             return service.getContractCustomerDetails(leasingContractId, customerId);
-        }
+    @GetMapping(path = "/{leasingContractId}/customer/{customerId}")
+    public CustomerDetailsResponseDto getCustomerDetails(@PathVariable UUID leasingContractId, @PathVariable UUID customerId) {
+        return service.getContractCustomerDetails(leasingContractId, customerId);
+    }
 
-        @GetMapping(path = "/{leasingContractId}/vehicle/{vehicleId}")
-        public VehicleDetailsResponseDto getVehicleDetails(@PathVariable UUID leasingContractId, @PathVariable UUID vehicleId) {
-            return service.getContractVehicleDetails(leasingContractId, vehicleId);
-        }
+    @GetMapping(path = "/{leasingContractId}/vehicle/{vehicleId}")
+    public VehicleDetailsResponseDto getVehicleDetails(@PathVariable UUID leasingContractId, @PathVariable UUID vehicleId) {
+        return service.getContractVehicleDetails(leasingContractId, vehicleId);
+    }
 }

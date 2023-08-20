@@ -1,6 +1,6 @@
 package com.allane.leasing.mapper;
 
-import com.allane.leasing.dto.ContractOverviewResponseDto;
+import com.allane.leasing.dto.leasingcontract.ContractOverviewResponseDto;
 import com.allane.leasing.dto.customer.CustomerDetailsResponseDto;
 import com.allane.leasing.dto.leasingcontract.ContractOverviewDetailsResponseDto;
 import com.allane.leasing.dto.leasingcontract.LeasingContractDetailsResponseDto;

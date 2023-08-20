@@ -5,9 +5,9 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import com.allane.leasing.dto.ContractOverviewResponseDto;
 import com.allane.leasing.dto.customer.CustomerDetailsResponseDto;
 import com.allane.leasing.dto.leasingcontract.ContractOverviewDetailsResponseDto;
+import com.allane.leasing.dto.leasingcontract.ContractOverviewResponseDto;
 import com.allane.leasing.dto.leasingcontract.LeasingContractDetailsResponseDto;
 import com.allane.leasing.dto.leasingcontract.LeasingContractRequestDto;
 import com.allane.leasing.dto.leasingcontract.LeasingContractUpdateRequestDto;
@@ -20,7 +20,6 @@ import com.allane.leasing.model.Customer;
 import com.allane.leasing.model.LeasingContract;
 import com.allane.leasing.model.Vehicle;
 import com.allane.leasing.repository.LeasingContractRepository;
-import com.allane.leasing.repository.VehicleRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.mapstruct.factory.Mappers;
@@ -48,8 +47,8 @@ public class LeasingContractService {
     }
 
     @Transactional
-    public LeasingContractDetailsResponseDto getLeasingContractDetails(int contractNumber) {
-        LeasingContract leasingContract = getLeasingContract(contractNumber);
+    public LeasingContractDetailsResponseDto getLeasingContractDetails(UUID leasingContractId) {
+        LeasingContract leasingContract = getLeasingContract(leasingContractId);
         return leasingContractMapper.toContractDetailsDto(leasingContract);
     }
 
@@ -77,8 +76,8 @@ public class LeasingContractService {
     }
 
     @Transactional
-    public void unAssignVehicle(int contractNumber, UUID vehicleId) {
-        LeasingContract leasingContract = getLeasingContract(contractNumber);
+    public void unAssignVehicle(UUID leasingContractId, UUID vehicleId) {
+        LeasingContract leasingContract = getLeasingContract(leasingContractId);
         Vehicle vehicle = vehicleService.getVehicle(vehicleId);
 
         if (isVehicleAssociatedToTheContract(leasingContract, vehicleId)) {
@@ -90,8 +89,8 @@ public class LeasingContractService {
     }
 
     @Transactional
-    public void assignVehicle(int contractNumber, UUID vehicleId) {
-        LeasingContract leasingContract = getLeasingContract(contractNumber);
+    public void assignVehicle(UUID leasingContractId, UUID vehicleId) {
+        LeasingContract leasingContract = getLeasingContract(leasingContractId);
         Vehicle vehicle = vehicleService.getVehicle(vehicleId);
         isAssignedVehicle(vehicle);
         if (isVehicleAssociatedToTheContract(leasingContract, vehicleId)) {
@@ -102,13 +101,13 @@ public class LeasingContractService {
     }
 
     @Transactional
-    public void unAssignCustomer(int contractNumber, UUID customerId) {
-        LeasingContract leasingContract = getLeasingContract(contractNumber);
+    public void unAssignCustomer(UUID leasingContractId, UUID customerId) {
+        LeasingContract leasingContract = getLeasingContract(leasingContractId);
         customerService.getCustomer(customerId);
 
         if (!isCustomerAssignedToContract(leasingContract, customerId)) {
-            log.error("customer with id {} is not associated to provided contract with contract number {}",
-                      customerId, contractNumber);
+            log.error("Customer with id {} is not associated to provided contract with contract id {}",
+                      customerId, leasingContractId);
             throw new AssociatedException("the customer is not associated to the contract");
         }
 
@@ -116,12 +115,12 @@ public class LeasingContractService {
     }
 
     @Transactional
-    public void assignCustomer(int contractNumber, UUID customerId) {
-        LeasingContract leasingContract = getLeasingContract(contractNumber);
+    public void assignCustomer(UUID leasingContractId, UUID customerId) {
+        LeasingContract leasingContract = getLeasingContract(leasingContractId);
 
         if (isCustomerAssignedToContract(leasingContract, customerId)) {
-            log.error("customer with id {} is already associated to provided contract with contract number {}",
-                      customerId, contractNumber);
+            log.error("Customer with id {} is already associated to provided contract with contract id {}",
+                      customerId, leasingContractId);
             throw new AssociatedException("the customer is associated to the contract");
         }
         Customer customer = customerService.getCustomer(customerId);
@@ -145,7 +144,7 @@ public class LeasingContractService {
         customerService.getCustomer(customerId);
 
         if (!isCustomerAssignedToContract(leasingContract, customerId)) {
-            log.error("customer with id {} is not associated to provided contract with leasing Contract Id {}",
+            log.error("Customer with id {} is not associated to provided contract with leasing Contract Id {}",
                       customerId, leasingContractId);
 
             throw new AssociatedException("the customer is not associated to the contract");
@@ -160,7 +159,7 @@ public class LeasingContractService {
         vehicleService.getVehicle(vehicleId);
 
         if (!isVehicleAssociatedToTheContract(leasingContract, vehicleId)) {
-            log.error("vehicle with id {} is not associated to provided contract with leasing Contract Id {}",
+            log.error("Vehicle with id {} is not associated to provided contract with leasing Contract Id {}",
                       vehicleId, leasingContractId);
 
             throw new AssociatedException("the vehicle is not associated to the contract");
@@ -189,14 +188,8 @@ public class LeasingContractService {
         }
     }
 
-
-    private LeasingContract getLeasingContract(int contractNumber) {
-        return leasingContractRepository.findLeasingContractByContractNumber(contractNumber)
-                .orElseThrow(() -> new NotFoundException("contract not found"));
-    }
-
     private LeasingContract getLeasingContract(UUID leasingContractId) {
         return leasingContractRepository.findById(leasingContractId)
-                .orElseThrow(() -> new NotFoundException("contract not found"));
+                .orElseThrow(() -> new NotFoundException("Contract not found"));
     }
 }

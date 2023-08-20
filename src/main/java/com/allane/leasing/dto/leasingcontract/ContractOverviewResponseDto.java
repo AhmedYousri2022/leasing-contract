@@ -1,4 +1,4 @@
-package com.allane.leasing.dto;
+package com.allane.leasing.dto.leasingcontract;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
