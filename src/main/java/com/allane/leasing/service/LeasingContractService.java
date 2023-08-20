@@ -39,17 +39,10 @@ public class LeasingContractService {
 
     private final LeasingContractMapper leasingContractMapper = Mappers.getMapper(LeasingContractMapper.class);
 
-
     @Transactional(readOnly = true)
     public List<ContractOverviewResponseDto> getLeasingContractsOverview() {
         List<LeasingContract> leasingContractOverview = leasingContractRepository.findAll();
         return leasingContractOverview.stream().map(leasingContractMapper::toDto).collect(Collectors.toList());
-    }
-
-    @Transactional
-    public LeasingContractDetailsResponseDto getLeasingContractDetails(UUID leasingContractId) {
-        LeasingContract leasingContract = getLeasingContract(leasingContractId);
-        return leasingContractMapper.toContractDetailsDto(leasingContract);
     }
 
     @Transactional(readOnly = true)
@@ -57,6 +50,12 @@ public class LeasingContractService {
         LeasingContract leasingContractOverview = leasingContractRepository.findById(leasingContractId)
                 .orElseThrow(() -> new NotFoundException("Contract not found"));
         return leasingContractMapper.toContractOverviewDetailsDto(leasingContractOverview);
+    }
+
+    @Transactional(readOnly = true)
+    public LeasingContractDetailsResponseDto getLeasingContractDetails(UUID leasingContractId) {
+        LeasingContract leasingContract = getLeasingContract(leasingContractId);
+        return leasingContractMapper.toContractDetailsDto(leasingContract);
     }
 
     @Transactional

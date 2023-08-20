@@ -1,32 +1,49 @@
 package com.allane.leasing.service;
 
-import java.util.UUID;
+import java.math.BigDecimal;
+import java.util.List;
 
-import com.allane.leasing.dto.customer.CustomerDetailsRequestDto;
-import com.allane.leasing.dto.customer.CustomerDetailsResponseDto;
-import com.allane.leasing.exception.NotFoundException;
+import com.allane.leasing.dto.leasingcontract.ContractOverviewDetailsResponseDto;
+import com.allane.leasing.dto.leasingcontract.ContractOverviewResponseDto;
+import com.allane.leasing.dto.leasingcontract.LeasingContractDetailsResponseDto;
 import com.allane.leasing.model.Customer;
+import com.allane.leasing.model.LeasingContract;
+import com.allane.leasing.model.Vehicle;
 import com.allane.leasing.repository.CustomerRepository;
-import com.allane.leasing.stub.customer.CustomerDetailsRequestDtoStub;
+import com.allane.leasing.repository.LeasingContractRepository;
+import com.allane.leasing.repository.VehicleRepository;
 import com.allane.leasing.stub.customer.CustomerModelStub;
+import com.allane.leasing.stub.leasingcontract.LeasingContractModelDtoStub;
+import com.allane.leasing.stub.vehicle.VehicleModelStub;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 class ContractLeasingServiceIT {
 
     @Autowired
-    private CustomerRepository repository;
+    private CustomerService customerService;
 
     @Autowired
-    private CustomerService service;
+    private VehicleService vehicleService;
+
+    @Autowired
+    private CustomerRepository customerRepository;
+
+    @Autowired
+    private VehicleRepository vehicleRepository;
+
+    @Autowired
+    private LeasingContractRepository repository;
+
+    @Autowired
+    private LeasingContractService leasingContractService;
+
 
     @BeforeEach
     void cleanup() {
@@ -34,57 +51,69 @@ class ContractLeasingServiceIT {
     }
 
     @Test
-    void shouldGetCustomerDetails() {
-        Customer customer = repository.save(CustomerModelStub.getDto());
+    void shouldGetLeasingContractsOverview() {
+        Customer customer = customerRepository.save(CustomerModelStub.getDto());
+        Vehicle vehicle = vehicleRepository.save(VehicleModelStub.getDto());
+        LeasingContract leasingContractStub = LeasingContractModelDtoStub.getDto();
+        leasingContractStub.setVehicle(vehicle);
+        leasingContractStub.setCustomer(customer);
+        LeasingContract leasingContract = repository.save(leasingContractStub);
 
-        CustomerDetailsResponseDto responseDto = service.getCustomerDetails(customer.getId());
+        List<ContractOverviewResponseDto> responseDtos = leasingContractService.getLeasingContractsOverview();
 
-        assertThat(responseDto.getFirstName(), is(customer.getFirstName()));
-        assertThat(responseDto.getLastName(), is(customer.getLastName()));
-        assertThat(responseDto.getBirthdate(), is(customer.getBirthdate()));
+        assertThat(responseDtos.get(0).getContractNumber(), is(leasingContract.getContractNumber()));
+        assertThat(BigDecimal.valueOf(responseDtos.get(0).getMonthlyRate()), is(leasingContract.getMonthlyRate()));
+        assertThat(responseDtos.get(0).getVehiclePrice(), is(leasingContract.getVehicle().getPrice()));
+        assertThat(responseDtos.get(0).getCustomerSummary(), is(leasingContract.getCustomer().getCustomerSummary()));
+        assertThat(responseDtos.get(0).getVehicleSummary(), is(leasingContract.getVehicle().getVehicleSummary()));
+        assertThat(responseDtos.get(0).getVehicleIdentificationNumber(),
+                   is(leasingContract.getVehicle().getVehicleIdentificationNumber()));
     }
 
     @Test
-    void shouldAddCustomerDetails() {
-        CustomerDetailsRequestDto requestDto = CustomerDetailsRequestDtoStub.getDto();
+    void shouldGetLeasingContractsOverviewDetails() {
+        Customer customer = customerRepository.save(CustomerModelStub.getDto());
+        Vehicle vehicle = vehicleRepository.save(VehicleModelStub.getDto());
+        LeasingContract leasingContractStub = LeasingContractModelDtoStub.getDto();
+        leasingContractStub.setVehicle(vehicle);
+        leasingContractStub.setCustomer(customer);
+        LeasingContract leasingContract = repository.save(leasingContractStub);
 
-        CustomerDetailsResponseDto responseDto = service.addCustomerDetails(requestDto);
+        ContractOverviewDetailsResponseDto overviewDetails = leasingContractService
+                .getLeasingContractsOverviewDetails(leasingContract.getId());
 
-        assertThat(responseDto.getFirstName(), is(requestDto.getFirstName()));
-        assertThat(responseDto.getLastName(), is(requestDto.getLastName()));
-        assertThat(responseDto.getBirthdate(), is(requestDto.getBirthdate()));
+        assertThat(overviewDetails.getContractNumber(), is(leasingContract.getContractNumber()));
+        assertThat(BigDecimal.valueOf(overviewDetails.getMonthlyRate()), is(leasingContract.getMonthlyRate()));
+        assertThat(overviewDetails.getVehicle().getPrice(), is(leasingContract.getVehicle().getPrice()));
+        assertThat(overviewDetails.getVehicle().getBrand(), is(leasingContract.getVehicle().getBrand()));
+        assertThat(overviewDetails.getVehicle().getModelYear(), is(leasingContract.getVehicle().getModelYear()));
+        assertThat(overviewDetails.getVehicle().getVehicleIdentificationNumber(),
+                   is(leasingContract.getVehicle().getVehicleIdentificationNumber()));
+        assertThat(overviewDetails.getCustomer().getFirstName(), is(leasingContract.getCustomer().getFirstName()));
+        assertThat(overviewDetails.getCustomer().getLastName(), is(leasingContract.getCustomer().getLastName()));
+        assertThat(overviewDetails.getCustomer().getBirthdate(), is(leasingContract.getCustomer().getBirthdate()));
     }
 
     @Test
-    void shouldDeleteCustomerDetails() {
-        Customer customer = repository.save(CustomerModelStub.getDto());
+    void shouldGetLeasingContractDetails() {
+        Customer customer = customerRepository.save(CustomerModelStub.getDto());
+        Vehicle vehicle = vehicleRepository.save(VehicleModelStub.getDto());
+        LeasingContract leasingContractStub = LeasingContractModelDtoStub.getDto();
+        leasingContractStub.setVehicle(vehicle);
+        leasingContractStub.setCustomer(customer);
+        LeasingContract leasingContract = repository.save(leasingContractStub);
 
-        service.deleteCustomerDetails(customer.getId());
+        LeasingContractDetailsResponseDto leasingContractDetails = leasingContractService.getLeasingContractDetails(
+                leasingContract.getId());
 
-        assertThat(repository.findAll(), hasSize(0));
+        assertThat(leasingContractDetails.getContractNumber(), is(leasingContract.getContractNumber()));
+        assertThat(BigDecimal.valueOf(leasingContractDetails.getMonthlyRate()), is(leasingContract.getMonthlyRate()));
+        assertThat(leasingContractDetails.getContractNumber(), is(leasingContract.getContractNumber()));
+        assertThat(leasingContractDetails.getCustomerSummary(), is(leasingContract.getCustomer().getCustomerSummary()));
+        assertThat(leasingContractDetails.getVehicleSummary(), is(leasingContract.getVehicle().getVehicleSummary()));
+        assertThat(leasingContractDetails.getVehicleIdentificationNumber(),
+                   is(leasingContract.getVehicle().getVehicleIdentificationNumber()));
     }
 
-    @Test
-    void shouldUpdateCustomerDetails() {
-        Customer customer = repository.save(CustomerModelStub.getDto());
-        CustomerDetailsRequestDto dto = CustomerDetailsRequestDtoStub.getDto();
-        dto.setFirstName("Mo");
 
-        CustomerDetailsResponseDto responseDto = service.updateCustomerDetails(customer.getId(), dto);
-
-        assertThat(responseDto.getFirstName(), is(dto.getFirstName()));
-        assertThat(responseDto.getLastName(), is(dto.getLastName()));
-        assertThat(responseDto.getBirthdate(), is(dto.getBirthdate()));
-    }
-
-    @Test
-    void shouldThrowCustomerNotfound() {
-        Exception exception = assertThrows(
-                NotFoundException.class,
-                () -> service.updateCustomerDetails(UUID.fromString("5087fb1f-8d57-46e0-9cdb-ad70855f0fc4"),
-                                                    CustomerDetailsRequestDtoStub.getDto()),
-                "Customer not found");
-
-        assertThat(exception.getMessage(), is("Customer not found"));
-    }
 }
