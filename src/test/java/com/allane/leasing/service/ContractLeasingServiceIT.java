@@ -2,7 +2,6 @@ package com.allane.leasing.service;
 
 import java.util.UUID;
 
-import com.allane.leasing.TestContainerConfiguration;
 import com.allane.leasing.dto.customer.CustomerDetailsRequestDto;
 import com.allane.leasing.dto.customer.CustomerDetailsResponseDto;
 import com.allane.leasing.exception.NotFoundException;
@@ -14,7 +13,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
@@ -22,8 +20,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
-//@SpringJUnitConfig(TestContainerConfiguration.class)
-class CustomerServiceIT {
+class ContractLeasingServiceIT {
 
     @Autowired
     private CustomerRepository repository;
