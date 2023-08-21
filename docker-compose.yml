@@ -5,7 +5,7 @@ services:
     restart: on-failure
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: leasing
+      MYSQL_DATABASE: leasing_contract
     ports:
       - "3306:3306"
 
@@ -15,7 +15,7 @@ services:
     restart: on-failure
     environment:
         SPRING_APPLICATION_JSON: '{
-               "spring.datasource.url"  : "jdbc:mysql://mysqldb:3306/leasing?createDatabaseIfNotExist=true",
+               "spring.datasource.url"  : "jdbc:mysql://mysqldb:3306/leasing_contract?createDatabaseIfNotExist=true",
                "spring.datasource.username" : "root",
                "spring.datasource.password" : "root",
                "spring.jpa.properties.hibernate.dialect" : "org.hibernate.dialect.MySQL5InnoDBDialect",
