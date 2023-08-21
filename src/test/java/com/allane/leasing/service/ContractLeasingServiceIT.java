@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.allane.leasing.DatabaseContainer;
 import com.allane.leasing.dto.leasingcontract.ContractOverviewDetailsResponseDto;
 import com.allane.leasing.dto.leasingcontract.ContractOverviewResponseDto;
 import com.allane.leasing.dto.leasingcontract.LeasingContractDetailsResponseDto;
@@ -22,10 +23,13 @@ import com.allane.leasing.stub.customer.CustomerModelStub;
 import com.allane.leasing.stub.leasingcontract.LeasingContractModelDtoStub;
 import com.allane.leasing.stub.leasingcontract.LeasingContractRequestDtoStub;
 import com.allane.leasing.stub.vehicle.VehicleModelStub;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -33,6 +37,7 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
+@ContextConfiguration(initializers = {DatabaseContainer.class})
 class ContractLeasingServiceIT {
 
     @Autowired
@@ -53,9 +58,8 @@ class ContractLeasingServiceIT {
     @Autowired
     private LeasingContractService leasingContractService;
 
-
-    @BeforeEach
-    void cleanup() {
+    @AfterEach
+    void tearDown() {
         repository.deleteAll();
     }
 

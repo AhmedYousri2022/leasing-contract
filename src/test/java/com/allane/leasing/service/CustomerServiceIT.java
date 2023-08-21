@@ -2,7 +2,7 @@ package com.allane.leasing.service;
 
 import java.util.UUID;
 
-import com.allane.leasing.TestContainerConfiguration;
+import com.allane.leasing.DatabaseContainer;
 import com.allane.leasing.dto.customer.CustomerDetailsRequestDto;
 import com.allane.leasing.dto.customer.CustomerDetailsResponseDto;
 import com.allane.leasing.exception.NotFoundException;
@@ -10,11 +10,12 @@ import com.allane.leasing.model.Customer;
 import com.allane.leasing.repository.CustomerRepository;
 import com.allane.leasing.stub.customer.CustomerDetailsRequestDtoStub;
 import com.allane.leasing.stub.customer.CustomerModelStub;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
+import org.springframework.test.context.ContextConfiguration;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
@@ -22,7 +23,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
-//@SpringJUnitConfig(TestContainerConfiguration.class)
+@ContextConfiguration(initializers = {DatabaseContainer.class})
 class CustomerServiceIT {
 
     @Autowired
@@ -31,8 +32,8 @@ class CustomerServiceIT {
     @Autowired
     private CustomerService service;
 
-    @BeforeEach
-    void cleanup() {
+    @AfterEach
+    void tearDown() {
         repository.deleteAll();
     }
 

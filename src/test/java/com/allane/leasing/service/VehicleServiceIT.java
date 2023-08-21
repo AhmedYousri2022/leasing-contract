@@ -2,6 +2,7 @@ package com.allane.leasing.service;
 
 import java.util.UUID;
 
+import com.allane.leasing.DatabaseContainer;
 import com.allane.leasing.dto.vehicle.VehicleDetailsRequestDto;
 import com.allane.leasing.dto.vehicle.VehicleDetailsResponseDto;
 import com.allane.leasing.exception.NotFoundException;
@@ -9,10 +10,12 @@ import com.allane.leasing.model.Vehicle;
 import com.allane.leasing.repository.VehicleRepository;
 import com.allane.leasing.stub.vehicle.VehicleDetailsRequestDtoStub;
 import com.allane.leasing.stub.vehicle.VehicleModelStub;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
@@ -20,6 +23,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
+@ContextConfiguration(initializers = {DatabaseContainer.class})
 class VehicleServiceIT {
 
     @Autowired
@@ -28,8 +32,8 @@ class VehicleServiceIT {
     @Autowired
     private VehicleService service;
 
-    @BeforeEach
-    void cleanup() {
+    @AfterEach
+    void tearDown() {
         repository.deleteAll();
     }
 
