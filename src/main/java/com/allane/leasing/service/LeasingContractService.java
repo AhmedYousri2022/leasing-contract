@@ -47,8 +47,7 @@ public class LeasingContractService {
 
     @Transactional(readOnly = true)
     public ContractOverviewDetailsResponseDto getLeasingContractsOverviewDetails(UUID leasingContractId) {
-        LeasingContract leasingContractOverview = leasingContractRepository.findById(leasingContractId)
-                .orElseThrow(() -> new NotFoundException("Contract not found"));
+        LeasingContract leasingContractOverview = getLeasingContract(leasingContractId);
         return leasingContractMapper.toContractOverviewDetailsDto(leasingContractOverview);
     }
 
@@ -83,7 +82,7 @@ public class LeasingContractService {
             vehicle.setAssigned(false);
             leasingContract.setVehicle(null);
         } else {
-            throw new AssociatedException("The vehicle already assigned to the contract");
+            throw new AssociatedException("The vehicle is not associated the contract");
         }
     }
 
