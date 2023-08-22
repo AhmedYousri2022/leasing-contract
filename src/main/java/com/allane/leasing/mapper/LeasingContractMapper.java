@@ -1,11 +1,10 @@
 package com.allane.leasing.mapper;
 
-import com.allane.leasing.dto.leasingcontract.ContractOverviewResponseDto;
 import com.allane.leasing.dto.customer.CustomerDetailsResponseDto;
 import com.allane.leasing.dto.leasingcontract.ContractOverviewDetailsResponseDto;
+import com.allane.leasing.dto.leasingcontract.ContractOverviewResponseDto;
 import com.allane.leasing.dto.leasingcontract.LeasingContractDetailsResponseDto;
 import com.allane.leasing.dto.leasingcontract.LeasingContractRequestDto;
-import com.allane.leasing.dto.leasingcontract.LeasingContractUpdateRequestDto;
 import com.allane.leasing.dto.vehicle.VehicleDetailsResponseDto;
 import com.allane.leasing.model.LeasingContract;
 import org.mapstruct.AfterMapping;
@@ -19,8 +18,6 @@ import org.mapstruct.ReportingPolicy;
 public interface LeasingContractMapper {
 
     LeasingContract toLeasingContract(LeasingContractRequestDto leasingContractRequestDto);
-
-    LeasingContract toLeasingContract(LeasingContractUpdateRequestDto leasingContractUpdateRequestDto);
 
     @Mapping(target = "contractNumber", source = "leasingContract.contractNumber")
     @Mapping(target = "monthlyRate", source = "leasingContract.monthlyRate")
@@ -119,8 +116,8 @@ public interface LeasingContractMapper {
         if (leasingContract.getVehicle() != null) {
             contractDetailsResponseDto.setVehicleSummary(leasingContract.getVehicle().getVehicleSummary());
         }
-        if (leasingContract.getVehicle() != null && leasingContract.getVehicle().getVehicleIdentificationNumber() == null) {
-            contractDetailsResponseDto.setVehicleIdentificationNumber("-");
+        if (leasingContract.getVehicle() == null || leasingContract.getVehicle().getVehicleIdentificationNumber() == null) {
+            contractDetailsResponseDto.setVehicleIdentificationNumber("-") ;
         } else {
             contractDetailsResponseDto.setVehicleIdentificationNumber(
                     leasingContract.getVehicle().getVehicleIdentificationNumber());
@@ -128,5 +125,5 @@ public interface LeasingContractMapper {
     }
 
 
-    void updateLeasingContractFromDto(LeasingContractUpdateRequestDto dto, @MappingTarget LeasingContract leasingContract);
+    void updateLeasingContractFromDto(LeasingContractRequestDto dto, @MappingTarget LeasingContract leasingContract);
 }

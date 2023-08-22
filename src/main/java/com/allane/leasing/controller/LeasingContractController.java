@@ -11,7 +11,6 @@ import com.allane.leasing.dto.leasingcontract.ContractOverviewDetailsResponseDto
 import com.allane.leasing.dto.leasingcontract.ContractOverviewResponseDto;
 import com.allane.leasing.dto.leasingcontract.LeasingContractDetailsResponseDto;
 import com.allane.leasing.dto.leasingcontract.LeasingContractRequestDto;
-import com.allane.leasing.dto.leasingcontract.LeasingContractUpdateRequestDto;
 import com.allane.leasing.dto.vehicle.VehicleDetailsResponseDto;
 import com.allane.leasing.service.LeasingContractService;
 import lombok.RequiredArgsConstructor;
@@ -54,43 +53,19 @@ public class LeasingContractController {
         return service.createLeasingContract(dto);
     }
 
-    @ResponseStatus(HttpStatus.OK)
-    @PostMapping(path = "/assign/{leasingContractId}/vehicle/{vehicleId}")
-    public void assignVehicle(@PathVariable UUID leasingContractId, @PathVariable UUID vehicleId) {
-        service.assignVehicle(leasingContractId, vehicleId);
-    }
-
-    @ResponseStatus(HttpStatus.OK)
-    @PostMapping(path = "/unassign/{leasingContractId}/vehicle/{vehicleId}")
-    public void unAssignVehicle(@PathVariable UUID leasingContractId, @PathVariable UUID vehicleId) {
-        service.unAssignVehicle(leasingContractId, vehicleId);
-    }
-
-    @ResponseStatus(HttpStatus.OK)
-    @PostMapping(path = "/assign/{leasingContractId}/customer/{customerId}")
-    public void assignCustomer(@PathVariable UUID leasingContractId, @PathVariable UUID customerId) {
-        service.assignCustomer(leasingContractId, customerId);
-    }
-
-    @ResponseStatus(HttpStatus.OK)
-    @PostMapping(path = "/unassign/{leasingContractId}/customer/{customerId}")
-    public void unAssignCustomer(@PathVariable UUID leasingContractId, @PathVariable UUID customerId) {
-        service.unAssignCustomer(leasingContractId, customerId);
-    }
-
     @PutMapping(path = "/{leasingContractId}")
     public LeasingContractDetailsResponseDto updateLeasingContract(@NotNull @PathVariable UUID leasingContractId,
-                                                                   @Valid @RequestBody LeasingContractUpdateRequestDto dto) {
+                                                                   @Valid @RequestBody LeasingContractRequestDto dto) {
         return service.updateLeasingContract(leasingContractId, dto);
     }
 
-    @GetMapping(path = "/{leasingContractId}/customer/{customerId}")
-    public CustomerDetailsResponseDto getCustomerDetails(@PathVariable UUID leasingContractId, @PathVariable UUID customerId) {
-        return service.getContractCustomerDetails(leasingContractId, customerId);
+    @GetMapping(path = "/{leasingContractId}/customer")
+    public CustomerDetailsResponseDto getCustomerDetails(@PathVariable UUID leasingContractId) {
+        return service.getAssignCustomerDetails(leasingContractId);
     }
 
-    @GetMapping(path = "/{leasingContractId}/vehicle/{vehicleId}")
-    public VehicleDetailsResponseDto getVehicleDetails(@PathVariable UUID leasingContractId, @PathVariable UUID vehicleId) {
-        return service.getContractVehicleDetails(leasingContractId, vehicleId);
+    @GetMapping(path = "/{leasingContractId}/vehicle")
+    public VehicleDetailsResponseDto getVehicleDetails(@PathVariable UUID leasingContractId) {
+        return service.getAssignedVehicleDetails(leasingContractId);
     }
 }

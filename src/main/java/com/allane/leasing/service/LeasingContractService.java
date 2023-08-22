@@ -1,7 +1,7 @@
 package com.allane.leasing.service;
 
+import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -10,7 +10,6 @@ import com.allane.leasing.dto.leasingcontract.ContractOverviewDetailsResponseDto
 import com.allane.leasing.dto.leasingcontract.ContractOverviewResponseDto;
 import com.allane.leasing.dto.leasingcontract.LeasingContractDetailsResponseDto;
 import com.allane.leasing.dto.leasingcontract.LeasingContractRequestDto;
-import com.allane.leasing.dto.leasingcontract.LeasingContractUpdateRequestDto;
 import com.allane.leasing.dto.vehicle.VehicleDetailsResponseDto;
 import com.allane.leasing.exception.AssociatedException;
 import com.allane.leasing.exception.NotFoundException;
@@ -61,7 +60,7 @@ public class LeasingContractService {
     public LeasingContractDetailsResponseDto createLeasingContract(LeasingContractRequestDto dto) {
         Customer customer = customerService.getCustomer(dto.getCustomerId());
         Vehicle vehicle = vehicleService.getVehicle(dto.getVehicleId());
-        isAssignedVehicle(vehicle);
+        checkAssignedVehicle(vehicle);
         vehicle.setAssigned(true);
 
         LeasingContract contract = leasingContractMapper.toLeasingContract(dto);
@@ -73,113 +72,74 @@ public class LeasingContractService {
         return leasingContractMapper.toContractDetailsDto(leasingContract);
     }
 
-    @Transactional
-    public void unAssignVehicle(UUID leasingContractId, UUID vehicleId) {
-        LeasingContract leasingContract = getLeasingContract(leasingContractId);
-        Vehicle vehicle = vehicleService.getVehicle(vehicleId);
-
-        if (isVehicleAssociatedToTheContract(leasingContract, vehicleId)) {
-            vehicle.setAssigned(false);
-            leasingContract.setVehicle(null);
-        } else {
-            throw new AssociatedException("The vehicle is not associated the contract");
-        }
-    }
 
     @Transactional
-    public void assignVehicle(UUID leasingContractId, UUID vehicleId) {
+    public LeasingContractDetailsResponseDto updateLeasingContract(UUID leasingContractId, LeasingContractRequestDto dto) {
         LeasingContract leasingContract = getLeasingContract(leasingContractId);
-        Vehicle vehicle = vehicleService.getVehicle(vehicleId);
-        isAssignedVehicle(vehicle);
-        if (isVehicleAssociatedToTheContract(leasingContract, vehicleId)) {
-            throw new AssociatedException("the vehicle already assigned to the contract");
-        }
-        vehicle.setAssigned(true);
-        leasingContract.setVehicle(vehicle);
-    }
-
-    @Transactional
-    public void unAssignCustomer(UUID leasingContractId, UUID customerId) {
-        LeasingContract leasingContract = getLeasingContract(leasingContractId);
-        customerService.getCustomer(customerId);
-
-        if (!isCustomerAssignedToContract(leasingContract, customerId)) {
-            log.error("Customer with id {} is not associated to provided contract with contract id {}",
-                      customerId, leasingContractId);
-            throw new AssociatedException("the customer is not associated to the contract");
-        }
-
-        leasingContract.setCustomer(null);
-    }
-
-    @Transactional
-    public void assignCustomer(UUID leasingContractId, UUID customerId) {
-        LeasingContract leasingContract = getLeasingContract(leasingContractId);
-
-        if (isCustomerAssignedToContract(leasingContract, customerId)) {
-            log.error("Customer with id {} is already associated to provided contract with contract id {}",
-                      customerId, leasingContractId);
-            throw new AssociatedException("the customer is associated to the contract");
-        }
-        Customer customer = customerService.getCustomer(customerId);
-        leasingContract.setCustomer(customer);
-    }
-
-    @Transactional
-    public LeasingContractDetailsResponseDto updateLeasingContract(UUID leasingContractId, LeasingContractUpdateRequestDto dto) {
-        LeasingContract leasingContract = getLeasingContract(leasingContractId);
-
+        setVehicle(dto, leasingContract);
+        setCustomer(dto, leasingContract);
+        leasingContract.setContractNumber(dto.getContractNumber());
+        leasingContract.setMonthlyRate(BigDecimal.valueOf(dto.getMonthlyRate()));
         leasingContractMapper.updateLeasingContractFromDto(dto, leasingContract);
-
         LeasingContract updated = leasingContractRepository.save(leasingContract);
-
         return leasingContractMapper.toContractDetailsDto(updated);
     }
 
-    @Transactional(readOnly = true)
-    public CustomerDetailsResponseDto getContractCustomerDetails(UUID leasingContractId, UUID customerId) {
-        LeasingContract leasingContract = getLeasingContract(leasingContractId);
-        customerService.getCustomer(customerId);
-
-        if (!isCustomerAssignedToContract(leasingContract, customerId)) {
-            log.error("Customer with id {} is not associated to provided contract with leasing Contract Id {}",
-                      customerId, leasingContractId);
-
-            throw new AssociatedException("the customer is not associated to the contract");
+    private void setCustomer(LeasingContractRequestDto dto, LeasingContract leasingContract) {
+        if (leasingContract.getCustomer() != null && dto.getCustomerId() == null) {
+            leasingContract.setCustomer(null);
+        } else {
+            Customer updatedCustomer = customerService.getCustomer(dto.getCustomerId());
+            leasingContract.setCustomer(updatedCustomer);
         }
+    }
 
-        return customerService.getCustomerDetails(customerId);
+    private void setVehicle(LeasingContractRequestDto dto, LeasingContract leasingContract) {
+        if (leasingContract.getVehicle() != null && dto.getVehicleId() == null) {
+            leasingContract.getVehicle().setAssigned(false);
+            leasingContract.setVehicle(null);
+        } else if (leasingContract.getVehicle() == null && dto.getVehicleId() != null) {
+            //assign
+            assignNewVehicleToContract(dto, leasingContract);
+        } else if (leasingContract.getVehicle() != null && !leasingContract.getVehicle().getId().equals( dto.getVehicleId())) {
+            //update
+            assignNewVehicleToContract(dto, leasingContract);
+            leasingContract.getVehicle().setAssigned(false);
+        }
+    }
+
+    private void assignNewVehicleToContract(LeasingContractRequestDto dto, LeasingContract leasingContract) {
+        Vehicle updatedVehicle = vehicleService.getVehicle(dto.getVehicleId());
+        checkAssignedVehicle(updatedVehicle);
+        updatedVehicle.setAssigned(true);
+        leasingContract.setVehicle(updatedVehicle);
+    }
+
+
+    @Transactional(readOnly = true)
+    public CustomerDetailsResponseDto getAssignCustomerDetails(UUID leasingContractId) {
+        LeasingContract leasingContract = getLeasingContract(leasingContractId);
+
+        if (leasingContract.getCustomer()==null) {
+            log.error("No customer is associated to provided contract with leasing Contract Id {}",
+                       leasingContractId);
+            throw new AssociatedException("No customer is associated to the contract");
+        }
+        return customerService.getCustomerDetails(leasingContract.getCustomer().getId());
     }
 
     @Transactional(readOnly = true)
-    public VehicleDetailsResponseDto getContractVehicleDetails(UUID leasingContractId, UUID vehicleId) {
+    public VehicleDetailsResponseDto getAssignedVehicleDetails(UUID leasingContractId) {
         LeasingContract leasingContract = getLeasingContract(leasingContractId);
-        vehicleService.getVehicle(vehicleId);
-
-        if (!isVehicleAssociatedToTheContract(leasingContract, vehicleId)) {
-            log.error("Vehicle with id {} is not associated to provided contract with leasing Contract Id {}",
-                      vehicleId, leasingContractId);
-
-            throw new AssociatedException("the vehicle is not associated to the contract");
+        if (leasingContract.getVehicle()==null) {
+            log.error("No Vehicle is associated to provided contract with leasing Contract Id {}",
+                      leasingContractId);
+            throw new AssociatedException("No Vehicle is associated to the contract");
         }
-
-        return vehicleService.getVehicleDetails(vehicleId);
+        return vehicleService.getVehicleDetails(leasingContract.getVehicle().getId());
     }
 
-    private boolean isVehicleAssociatedToTheContract(LeasingContract leasingContract, UUID vehicleId) {
-        Optional<LeasingContract> contract = leasingContractRepository.findLeasingContractByIdAndVehicleId(
-                leasingContract.getId(), vehicleId);
-
-        return contract.isPresent();
-    }
-
-    private boolean isCustomerAssignedToContract(LeasingContract leasingContract, UUID customerId) {
-        Optional<LeasingContract> contract = leasingContractRepository.findLeasingContractByIdAndCustomerId(
-                leasingContract.getId(), customerId);
-        return contract.isPresent();
-    }
-
-    private void isAssignedVehicle(Vehicle vehicle) {
+    private void checkAssignedVehicle(Vehicle vehicle) {
         if (vehicle.isAssigned()) {
             log.error("Vehicle id {} already assigned to a contract", vehicle.getId());
             throw new VehicleAssignedException("Vehicle already assigned to a contract");

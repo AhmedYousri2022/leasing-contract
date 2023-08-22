@@ -2,7 +2,6 @@ package com.allane.leasing.service;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import com.allane.leasing.DatabaseContainer;
@@ -10,7 +9,6 @@ import com.allane.leasing.dto.leasingcontract.ContractOverviewDetailsResponseDto
 import com.allane.leasing.dto.leasingcontract.ContractOverviewResponseDto;
 import com.allane.leasing.dto.leasingcontract.LeasingContractDetailsResponseDto;
 import com.allane.leasing.dto.leasingcontract.LeasingContractRequestDto;
-import com.allane.leasing.exception.AssociatedException;
 import com.allane.leasing.exception.NotFoundException;
 import com.allane.leasing.exception.VehicleAssignedException;
 import com.allane.leasing.model.Customer;
@@ -23,9 +21,7 @@ import com.allane.leasing.stub.customer.CustomerModelStub;
 import com.allane.leasing.stub.leasingcontract.LeasingContractModelDtoStub;
 import com.allane.leasing.stub.leasingcontract.LeasingContractRequestDtoStub;
 import com.allane.leasing.stub.vehicle.VehicleModelStub;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -33,7 +29,6 @@ import org.springframework.test.context.ContextConfiguration;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
@@ -96,7 +91,6 @@ class ContractLeasingServiceIT {
                 .getLeasingContractsOverviewDetails(leasingContract.getId());
 
         assertThat(overviewDetails.getContractNumber(), is(leasingContract.getContractNumber()));
-
     }
 
     @Test
@@ -108,7 +102,8 @@ class ContractLeasingServiceIT {
         leasingContractStub.setCustomer(customer);
         LeasingContract leasingContract = repository.save(leasingContractStub);
 
-        LeasingContractDetailsResponseDto leasingContractDetails = leasingContractService.getLeasingContractDetails(leasingContract.getId());
+        LeasingContractDetailsResponseDto leasingContractDetails = leasingContractService.getLeasingContractDetails(
+                leasingContract.getId());
 
         assertThat(leasingContractDetails.getContractNumber(), is(leasingContract.getContractNumber()));
         assertThat(BigDecimal.valueOf(leasingContractDetails.getMonthlyRate()), is(leasingContract.getMonthlyRate()));
@@ -165,70 +160,19 @@ class ContractLeasingServiceIT {
 
         assertThat(exception.getMessage(), is("Vehicle already assigned to a contract"));
     }
-
-    @Test
-    void shouldUnassignVehicle() {
-        Customer customer = customerRepository.save(CustomerModelStub.getDto());
-        Vehicle vehicle = vehicleRepository.save(VehicleModelStub.getDto());
-        LeasingContract leasingContractStub = LeasingContractModelDtoStub.getDto();
-        leasingContractStub.setVehicle(vehicle);
-        leasingContractStub.setCustomer(customer);
-        LeasingContract leasingContract = repository.save(leasingContractStub);
-
-       leasingContractService.unAssignVehicle(leasingContract.getId(), vehicle.getId());
-
-        assertThat(vehicle.isAssigned(), is(false));
-    }
-
-    @Test
-    void shouldThrowAssociatedExceptionWhenUnassignVehicle() {
-        Customer customer = customerRepository.save(CustomerModelStub.getDto());
-        Vehicle vehicle = vehicleRepository.save(VehicleModelStub.getDto());
-        Vehicle vehicle2 = vehicleRepository.save(VehicleModelStub.getDto());
-        LeasingContract leasingContractStub = LeasingContractModelDtoStub.getDto();
-        leasingContractStub.setVehicle(vehicle);
-        leasingContractStub.setCustomer(customer);
-        LeasingContract leasingContract = repository.save(leasingContractStub);
-
-        Exception exception = assertThrows(
-                AssociatedException.class,
-                () -> leasingContractService.unAssignVehicle(leasingContract.getId(), vehicle2.getId()),
-                "The vehicle is not associated the contract");
-
-        assertThat(exception.getMessage(), is("The vehicle is not associated the contract"));
-    }
-
-//    @Test // need to get the saved enitiy
-//    void shouldAssignVehicle() {
-//        Customer customer = customerRepository.save(CustomerModelStub.getDto());
-//        Vehicle vehicle = vehicleRepository.save(VehicleModelStub.getDto());
-//        Vehicle vehicle2 = vehicleRepository.save(VehicleModelStub.getDto());
-//        LeasingContract leasingContractStub = LeasingContractModelDtoStub.getDto();
-//        leasingContractStub.setVehicle(vehicle);
-//        leasingContractStub.setCustomer(customer);
-//        LeasingContract leasingContract = repository.save(leasingContractStub);
-//
-//        leasingContractService.assignVehicle(leasingContract.getId(), vehicle2.getId());
-//        Optional<LeasingContract> updated = repository.findById(leasingContract.getId());
-//
-//        assertThat(updated.get().getVehicle().isAssigned(), is(true));
-//    }
-
-    @Test
-    void shouldThrowAssociatedExceptionAssignVehicle() {
-        Customer customer = customerRepository.save(CustomerModelStub.getDto());
-        Vehicle vehicle = vehicleRepository.save(VehicleModelStub.getDto());
-        LeasingContract leasingContractStub = LeasingContractModelDtoStub.getDto();
-        leasingContractStub.setVehicle(vehicle);
-        leasingContractStub.setCustomer(customer);
-        LeasingContract leasingContract = repository.save(leasingContractStub);
-
-        Exception exception = assertThrows(
-                AssociatedException.class,
-                () -> leasingContractService.assignVehicle(leasingContract.getId(), vehicle.getId()),
-                "the vehicle already assigned to the contract");
-
-        assertThat(exception.getMessage(), is("the vehicle already assigned to the contract"));
-    }
-
+    //    @Test // need to get the saved enitiy
+    //    void shouldAssignVehicle() {
+    //        Customer customer = customerRepository.save(CustomerModelStub.getDto());
+    //        Vehicle vehicle = vehicleRepository.save(VehicleModelStub.getDto());
+    //        Vehicle vehicle2 = vehicleRepository.save(VehicleModelStub.getDto());
+    //        LeasingContract leasingContractStub = LeasingContractModelDtoStub.getDto();
+    //        leasingContractStub.setVehicle(vehicle);
+    //        leasingContractStub.setCustomer(customer);
+    //        LeasingContract leasingContract = repository.save(leasingContractStub);
+    //
+    //        leasingContractService.assignVehicle(leasingContract.getId(), vehicle2.getId());
+    //        Optional<LeasingContract> updated = repository.findById(leasingContract.getId());
+    //
+    //        assertThat(updated.get().getVehicle().isAssigned(), is(true));
+    //    }
 }
