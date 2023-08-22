@@ -101,7 +101,7 @@ public class LeasingContractService {
         } else if (leasingContract.getVehicle() == null && dto.getVehicleId() != null) {
             //assign
             assignNewVehicleToContract(dto, leasingContract);
-        } else if (leasingContract.getVehicle() != null && !leasingContract.getVehicle().getId().equals( dto.getVehicleId())) {
+        } else if (leasingContract.getVehicle() != null && !leasingContract.getVehicle().getId().equals(dto.getVehicleId())) {
             //update
             assignNewVehicleToContract(dto, leasingContract);
             leasingContract.getVehicle().setAssigned(false);
@@ -120,9 +120,9 @@ public class LeasingContractService {
     public CustomerDetailsResponseDto getAssignCustomerDetails(UUID leasingContractId) {
         LeasingContract leasingContract = getLeasingContract(leasingContractId);
 
-        if (leasingContract.getCustomer()==null) {
+        if (leasingContract.getCustomer() == null) {
             log.error("No customer is associated to provided contract with leasing Contract Id {}",
-                       leasingContractId);
+                      leasingContractId);
             throw new AssociatedException("No customer is associated to the contract");
         }
         return customerService.getCustomerDetails(leasingContract.getCustomer().getId());
@@ -131,7 +131,7 @@ public class LeasingContractService {
     @Transactional(readOnly = true)
     public VehicleDetailsResponseDto getAssignedVehicleDetails(UUID leasingContractId) {
         LeasingContract leasingContract = getLeasingContract(leasingContractId);
-        if (leasingContract.getVehicle()==null) {
+        if (leasingContract.getVehicle() == null) {
             log.error("No Vehicle is associated to provided contract with leasing Contract Id {}",
                       leasingContractId);
             throw new AssociatedException("No Vehicle is associated to the contract");

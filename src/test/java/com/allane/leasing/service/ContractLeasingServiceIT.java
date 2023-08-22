@@ -29,17 +29,12 @@ import org.springframework.test.context.ContextConfiguration;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @ContextConfiguration(initializers = {DatabaseContainer.class})
 class ContractLeasingServiceIT {
-
-    @Autowired
-    private CustomerService customerService;
-
-    @Autowired
-    private VehicleService vehicleService;
 
     @Autowired
     private CustomerRepository customerRepository;
@@ -116,9 +111,11 @@ class ContractLeasingServiceIT {
 
     @Test
     void shouldThrowContractNotFoundWhenGetLeasingContractDetails() {
-        Exception exception = assertThrows(
+        UUID nonExistentContractId = UUID.fromString("5087fb1f-8d57-46e0-9cdb-ad70855f0fc4");
+
+        NotFoundException exception = assertThrows(
                 NotFoundException.class,
-                () -> leasingContractService.getLeasingContractDetails(UUID.fromString("5087fb1f-8d57-46e0-9cdb-ad70855f0fc4")),
+                () -> leasingContractService.getLeasingContractDetails(nonExistentContractId),
                 "Contract not found");
 
         assertThat(exception.getMessage(), is("Contract not found"));
@@ -160,19 +157,138 @@ class ContractLeasingServiceIT {
 
         assertThat(exception.getMessage(), is("Vehicle already assigned to a contract"));
     }
-    //    @Test // need to get the saved enitiy
-    //    void shouldAssignVehicle() {
-    //        Customer customer = customerRepository.save(CustomerModelStub.getDto());
-    //        Vehicle vehicle = vehicleRepository.save(VehicleModelStub.getDto());
-    //        Vehicle vehicle2 = vehicleRepository.save(VehicleModelStub.getDto());
-    //        LeasingContract leasingContractStub = LeasingContractModelDtoStub.getDto();
-    //        leasingContractStub.setVehicle(vehicle);
-    //        leasingContractStub.setCustomer(customer);
-    //        LeasingContract leasingContract = repository.save(leasingContractStub);
-    //
-    //        leasingContractService.assignVehicle(leasingContract.getId(), vehicle2.getId());
-    //        Optional<LeasingContract> updated = repository.findById(leasingContract.getId());
-    //
-    //        assertThat(updated.get().getVehicle().isAssigned(), is(true));
-    //    }
+
+    @Test
+    void shouldUpdateContractNumberLeasingContract() {
+        Customer customer = customerRepository.save(CustomerModelStub.getDto());
+        Vehicle vehicle = vehicleRepository.save(VehicleModelStub.getDto());
+        LeasingContract leasingContractStub = LeasingContractModelDtoStub.getDto();
+        leasingContractStub.setVehicle(vehicle);
+        leasingContractStub.setCustomer(customer);
+        LeasingContract saved = repository.save(leasingContractStub);
+        LeasingContractRequestDto updatedLeasing = LeasingContractRequestDtoStub.getDto();
+        updatedLeasing.setContractNumber(100);
+        updatedLeasing.setVehicleId(vehicle.getId());
+        updatedLeasing.setCustomerId(customer.getId());
+
+
+        LeasingContractDetailsResponseDto leasingContract = leasingContractService.updateLeasingContract(saved.getId(), updatedLeasing);
+
+        assertThat(leasingContract.getContractNumber(), is(updatedLeasing.getContractNumber()));
+        assertThat(leasingContract.getMonthlyRate(), is(updatedLeasing.getMonthlyRate()));
+        assertThat(leasingContract.getCustomerSummary(), is(customer.getCustomerSummary()));
+        assertThat(leasingContract.getVehicleSummary(), is(vehicle.getVehicleSummary()));
+        assertThat(leasingContract.getVehicleIdentificationNumber(), is(vehicle.getVehicleIdentificationNumber()));
+    }
+
+    @Test
+    void shouldUnassignVehicleLeasingContract() {
+        Customer customer = customerRepository.save(CustomerModelStub.getDto());
+        Vehicle vehicle = vehicleRepository.save(VehicleModelStub.getDto());
+        LeasingContract leasingContractStub = LeasingContractModelDtoStub.getDto();
+        leasingContractStub.setVehicle(vehicle);
+        leasingContractStub.setCustomer(customer);
+        LeasingContract saved = repository.save(leasingContractStub);
+        LeasingContractRequestDto updatedLeasing = LeasingContractRequestDtoStub.getDto();
+        updatedLeasing.setContractNumber(100);
+        updatedLeasing.setVehicleId(null);
+        updatedLeasing.setCustomerId(customer.getId());
+
+
+        LeasingContractDetailsResponseDto leasingContract = leasingContractService.updateLeasingContract(saved.getId(), updatedLeasing);
+
+        assertThat(leasingContract.getContractNumber(), is(updatedLeasing.getContractNumber()));
+        assertThat(leasingContract.getMonthlyRate(), is(updatedLeasing.getMonthlyRate()));
+        assertThat(leasingContract.getCustomerSummary(), is(customer.getCustomerSummary()));
+        assertThat(leasingContract.getVehicleSummary(), nullValue());
+        assertThat(leasingContract.getVehicleIdentificationNumber(), is("-"));
+    }
+
+    @Test
+    void shouldUnassignVehicleAndCustomerLeasingContract() {
+        Customer customer = customerRepository.save(CustomerModelStub.getDto());
+        Vehicle vehicle = vehicleRepository.save(VehicleModelStub.getDto());
+        LeasingContract leasingContractStub = LeasingContractModelDtoStub.getDto();
+        leasingContractStub.setVehicle(vehicle);
+        leasingContractStub.setCustomer(customer);
+        LeasingContract saved = repository.save(leasingContractStub);
+        LeasingContractRequestDto updatedLeasing = LeasingContractRequestDtoStub.getDto();
+        updatedLeasing.setContractNumber(100);
+        updatedLeasing.setVehicleId(null);
+        updatedLeasing.setCustomerId(null);
+
+
+        LeasingContractDetailsResponseDto leasingContract = leasingContractService.updateLeasingContract(saved.getId(), updatedLeasing);
+
+        assertThat(leasingContract.getContractNumber(), is(updatedLeasing.getContractNumber()));
+        assertThat(leasingContract.getMonthlyRate(), is(updatedLeasing.getMonthlyRate()));
+        assertThat(leasingContract.getCustomerSummary(), is(nullValue()));
+        assertThat(leasingContract.getVehicleSummary(), nullValue());
+        assertThat(leasingContract.getVehicleIdentificationNumber(), is("-"));
+    }
+
+    @Test
+    void shouldThrowVehcileNotFoundWhenUpdateLeasingContract() {
+        Customer customer = customerRepository.save(CustomerModelStub.getDto());
+        Vehicle vehicle = vehicleRepository.save(VehicleModelStub.getDto());
+        LeasingContract leasingContractStub = LeasingContractModelDtoStub.getDto();
+        leasingContractStub.setVehicle(vehicle);
+        leasingContractStub.setCustomer(customer);
+        LeasingContract saved = repository.save(leasingContractStub);
+        LeasingContractRequestDto updatedLeasing = LeasingContractRequestDtoStub.getDto();
+
+
+        Exception exception = assertThrows(
+                NotFoundException.class,
+                () -> leasingContractService.updateLeasingContract(saved.getId(), updatedLeasing),
+                "Vehicle not found");
+
+        assertThat(exception.getMessage(), is("Vehicle not found"));
+    }
+
+    @Test
+    void shouldThrowCustomerNotFoundWhenUpdateLeasingContract() {
+        Customer customer = customerRepository.save(CustomerModelStub.getDto());
+        Vehicle vehicle = vehicleRepository.save(VehicleModelStub.getDto());
+        LeasingContract leasingContractStub = LeasingContractModelDtoStub.getDto();
+        leasingContractStub.setVehicle(vehicle);
+        leasingContractStub.setCustomer(customer);
+        LeasingContract saved = repository.save(leasingContractStub);
+        LeasingContractRequestDto updatedLeasing = LeasingContractRequestDtoStub.getDto();
+        updatedLeasing.setContractNumber(100);
+        updatedLeasing.setCustomerId(customer.getId());
+
+        Exception exception = assertThrows(
+                NotFoundException.class,
+                () -> leasingContractService.updateLeasingContract(saved.getId(), updatedLeasing),
+                "Vehicle not found");
+
+        assertThat(exception.getMessage(), is("Vehicle not found"));
+    }
+
+    @Test
+    void shouldThrowAssociatedExceptionWhenUpdateLeasingContract() {
+        Customer customer = customerRepository.save(CustomerModelStub.getDto());
+        Vehicle vehicle = vehicleRepository.save(VehicleModelStub.getDto());
+        Vehicle vehicleModel = VehicleModelStub.getDto();
+        vehicleModel.setAssigned(true);
+        Vehicle vehicle2 = vehicleRepository.save(vehicleModel);
+
+        LeasingContract leasingContractStub = LeasingContractModelDtoStub.getDto();
+        leasingContractStub.setVehicle(vehicle);
+        leasingContractStub.setCustomer(customer);
+        LeasingContract saved = repository.save(leasingContractStub);
+        LeasingContractRequestDto updatedLeasing = LeasingContractRequestDtoStub.getDto();
+        updatedLeasing.setContractNumber(100);
+        updatedLeasing.setCustomerId(customer.getId());
+        updatedLeasing.setVehicleId(vehicle2.getId());
+
+
+        Exception exception = assertThrows(
+                VehicleAssignedException.class,
+                () -> leasingContractService.updateLeasingContract(saved.getId(), updatedLeasing),
+                "Vehicle already assigned to a contract");
+
+        assertThat(exception.getMessage(), is("Vehicle already assigned to a contract"));
+    }
 }
