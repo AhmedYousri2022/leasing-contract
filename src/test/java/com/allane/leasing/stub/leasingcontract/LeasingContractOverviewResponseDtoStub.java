@@ -1,11 +1,11 @@
 package com.allane.leasing.stub.leasingcontract;
 
-import com.allane.leasing.dto.leasingcontract.ContractOverviewResponseDto;
+import com.allane.leasing.dto.leasingcontract.LeasingContractOverviewResponseDto;
 
-public class ContractOverviewResponseDtoStub {
+public class LeasingContractOverviewResponseDtoStub {
 
-    public static ContractOverviewResponseDto getDto() {
-        ContractOverviewResponseDto responseDto = new ContractOverviewResponseDto();
+    public static LeasingContractOverviewResponseDto getDto() {
+        LeasingContractOverviewResponseDto responseDto = new LeasingContractOverviewResponseDto();
         responseDto.setContractNumber(151);
         responseDto.setVehiclePrice(15000d);
         responseDto.setMonthlyRate(1.5);

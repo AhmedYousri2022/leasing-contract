@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 @Data
 @AllArgsConstructor
 @RequiredArgsConstructor
-public class ContractOverviewResponseDto {
+public class LeasingContractOverviewResponseDto {
 
     private int contractNumber;
 

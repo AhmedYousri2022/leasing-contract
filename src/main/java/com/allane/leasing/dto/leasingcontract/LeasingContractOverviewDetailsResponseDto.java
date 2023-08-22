@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 @Data
 @AllArgsConstructor
 @RequiredArgsConstructor
-public class ContractOverviewDetailsResponseDto {
+public class LeasingContractOverviewDetailsResponseDto {
 
     private int contractNumber;
 

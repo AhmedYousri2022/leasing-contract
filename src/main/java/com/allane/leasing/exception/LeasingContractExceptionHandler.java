@@ -3,7 +3,7 @@ package com.allane.leasing.exception;
 import java.time.ZonedDateTime;
 import java.util.Collection;
 
-import com.allane.leasing.dto.LeasingErrorResponseDto;
+import com.allane.leasing.dto.LeasingContractErrorResponseDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,32 +17,32 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @Slf4j
 @RestControllerAdvice
-public class ContractLeasingExceptionHandler {
+public class LeasingContractExceptionHandler {
 
     @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<LeasingErrorResponseDto> handleNotFound(NotFoundException e) {
+    public ResponseEntity<LeasingContractErrorResponseDto> handleNotFound(NotFoundException e) {
         log.error("Not found");
-        return new ResponseEntity<>(new LeasingErrorResponseDto(HttpStatus.NOT_FOUND.value(), e.getMessage(), ZonedDateTime.now()),
+        return new ResponseEntity<>(new LeasingContractErrorResponseDto(HttpStatus.NOT_FOUND.value(), e.getMessage(), ZonedDateTime.now()),
                                     HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(BadRequestException.class)
-    public ResponseEntity<LeasingErrorResponseDto> handleValidationExceptions(BadRequestException ex) {
+    public ResponseEntity<LeasingContractErrorResponseDto> handleValidationExceptions(BadRequestException ex) {
         log.error("Bad request", ex);
         return new ResponseEntity<>(
-                new LeasingErrorResponseDto(HttpStatus.BAD_REQUEST.value(), ex.getMessage(), ZonedDateTime.now()),
+                new LeasingContractErrorResponseDto(HttpStatus.BAD_REQUEST.value(), ex.getMessage(), ZonedDateTime.now()),
                 HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(VehicleAssignedException.class)
-    public ResponseEntity<LeasingErrorResponseDto> handleVehicleAssignedException(VehicleAssignedException ex) {
+    public ResponseEntity<LeasingContractErrorResponseDto> handleVehicleAssignedException(VehicleAssignedException ex) {
         return new ResponseEntity<>(
-                new LeasingErrorResponseDto(HttpStatus.BAD_REQUEST.value(), ex.getMessage(), ZonedDateTime.now()),
+                new LeasingContractErrorResponseDto(HttpStatus.BAD_REQUEST.value(), ex.getMessage(), ZonedDateTime.now()),
                 HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<LeasingErrorResponseDto> handle(MethodArgumentNotValidException ex) {
+    public ResponseEntity<LeasingContractErrorResponseDto> handle(MethodArgumentNotValidException ex) {
         BindingResult bindingResult = ex.getBindingResult();
         FieldError fieldError = bindingResult.getFieldError();
         StringBuilder message = new StringBuilder();
@@ -75,7 +75,7 @@ public class ContractLeasingExceptionHandler {
             }
         }
         return new ResponseEntity<>(
-                new LeasingErrorResponseDto(HttpStatus.BAD_REQUEST.value(), message.toString(), ZonedDateTime.now()),
+                new LeasingContractErrorResponseDto(HttpStatus.BAD_REQUEST.value(), message.toString(), ZonedDateTime.now()),
                 HttpStatus.BAD_REQUEST);
     }
 

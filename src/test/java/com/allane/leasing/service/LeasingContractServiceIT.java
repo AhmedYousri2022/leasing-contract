@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.UUID;
 
 import com.allane.leasing.DatabaseContainer;
-import com.allane.leasing.dto.leasingcontract.ContractOverviewDetailsResponseDto;
-import com.allane.leasing.dto.leasingcontract.ContractOverviewResponseDto;
+import com.allane.leasing.dto.leasingcontract.LeasingContractOverviewDetailsResponseDto;
+import com.allane.leasing.dto.leasingcontract.LeasingContractOverviewResponseDto;
 import com.allane.leasing.dto.leasingcontract.LeasingContractDetailsResponseDto;
 import com.allane.leasing.dto.leasingcontract.LeasingContractRequestDto;
 import com.allane.leasing.exception.NotFoundException;
@@ -34,7 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @ContextConfiguration(initializers = {DatabaseContainer.class})
-class ContractLeasingServiceIT {
+class LeasingContractServiceIT {
 
     @Autowired
     private CustomerRepository customerRepository;
@@ -62,7 +62,7 @@ class ContractLeasingServiceIT {
         leasingContractStub.setCustomer(customer);
         LeasingContract leasingContract = repository.save(leasingContractStub);
 
-        List<ContractOverviewResponseDto> responseDtos = leasingContractService.getLeasingContractsOverview();
+        List<LeasingContractOverviewResponseDto> responseDtos = leasingContractService.getLeasingContractsOverview();
 
         assertThat(responseDtos.get(0).getContractNumber(), is(leasingContract.getContractNumber()));
         assertThat(BigDecimal.valueOf(responseDtos.get(0).getMonthlyRate()), is(leasingContract.getMonthlyRate()));
@@ -82,7 +82,7 @@ class ContractLeasingServiceIT {
         leasingContractStub.setCustomer(customer);
         LeasingContract leasingContract = repository.save(leasingContractStub);
 
-        ContractOverviewDetailsResponseDto overviewDetails = leasingContractService
+        LeasingContractOverviewDetailsResponseDto overviewDetails = leasingContractService
                 .getLeasingContractsOverviewDetails(leasingContract.getId());
 
         assertThat(overviewDetails.getContractNumber(), is(leasingContract.getContractNumber()));

@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public class LeasingErrorResponseDto {
+public class LeasingContractErrorResponseDto {
 
     private final int status;
 

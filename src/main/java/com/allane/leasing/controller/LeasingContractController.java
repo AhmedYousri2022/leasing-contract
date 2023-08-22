@@ -7,8 +7,8 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import com.allane.leasing.dto.customer.CustomerDetailsResponseDto;
-import com.allane.leasing.dto.leasingcontract.ContractOverviewDetailsResponseDto;
-import com.allane.leasing.dto.leasingcontract.ContractOverviewResponseDto;
+import com.allane.leasing.dto.leasingcontract.LeasingContractOverviewDetailsResponseDto;
+import com.allane.leasing.dto.leasingcontract.LeasingContractOverviewResponseDto;
 import com.allane.leasing.dto.leasingcontract.LeasingContractDetailsResponseDto;
 import com.allane.leasing.dto.leasingcontract.LeasingContractRequestDto;
 import com.allane.leasing.dto.vehicle.VehicleDetailsResponseDto;
@@ -33,12 +33,12 @@ public class LeasingContractController {
     private final LeasingContractService service;
 
     @GetMapping
-    public List<ContractOverviewResponseDto> getLeasingContractsOverview() {
+    public List<LeasingContractOverviewResponseDto> getLeasingContractsOverview() {
         return service.getLeasingContractsOverview();
     }
 
     @GetMapping(path = "/details/{leasingContractId}")
-    public ContractOverviewDetailsResponseDto getLeasingContractOverviewDetails(@NotNull @PathVariable UUID leasingContractId) {
+    public LeasingContractOverviewDetailsResponseDto getLeasingContractOverviewDetails(@NotNull @PathVariable UUID leasingContractId) {
         return service.getLeasingContractsOverviewDetails(leasingContractId);
     }
 

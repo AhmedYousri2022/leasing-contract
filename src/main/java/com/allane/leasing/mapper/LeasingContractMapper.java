@@ -1,8 +1,8 @@
 package com.allane.leasing.mapper;
 
 import com.allane.leasing.dto.customer.CustomerDetailsResponseDto;
-import com.allane.leasing.dto.leasingcontract.ContractOverviewDetailsResponseDto;
-import com.allane.leasing.dto.leasingcontract.ContractOverviewResponseDto;
+import com.allane.leasing.dto.leasingcontract.LeasingContractOverviewDetailsResponseDto;
+import com.allane.leasing.dto.leasingcontract.LeasingContractOverviewResponseDto;
 import com.allane.leasing.dto.leasingcontract.LeasingContractDetailsResponseDto;
 import com.allane.leasing.dto.leasingcontract.LeasingContractRequestDto;
 import com.allane.leasing.dto.vehicle.VehicleDetailsResponseDto;
@@ -21,10 +21,10 @@ public interface LeasingContractMapper {
 
     @Mapping(target = "contractNumber", source = "leasingContract.contractNumber")
     @Mapping(target = "monthlyRate", source = "leasingContract.monthlyRate")
-    ContractOverviewResponseDto toDto(LeasingContract leasingContract);
+    LeasingContractOverviewResponseDto toDto(LeasingContract leasingContract);
 
     @AfterMapping
-    default void setContractOverviewDto(@MappingTarget ContractOverviewResponseDto dto, LeasingContract leasingContract) {
+    default void setContractOverviewDto(@MappingTarget LeasingContractOverviewResponseDto dto, LeasingContract leasingContract) {
         if (leasingContract.getCustomer() != null) {
             dto.setCustomerSummary(leasingContract.getCustomer().getCustomerSummary());
         }
@@ -56,17 +56,17 @@ public interface LeasingContractMapper {
 
     @Mapping(target = "contractNumber", source = "leasingContract.contractNumber")
     @Mapping(target = "monthlyRate", source = "leasingContract.monthlyRate")
-    ContractOverviewDetailsResponseDto toContractOverviewDetailsDto(LeasingContract leasingContract);
+    LeasingContractOverviewDetailsResponseDto toContractOverviewDetailsDto(LeasingContract leasingContract);
 
     @AfterMapping
-    default void setContractDetailsDto(@MappingTarget ContractOverviewDetailsResponseDto dto,
+    default void setContractDetailsDto(@MappingTarget LeasingContractOverviewDetailsResponseDto dto,
                                        LeasingContract leasingContract) {
         setCustomer(dto, leasingContract);
 
         setVehicle(dto, leasingContract);
     }
 
-    private static void setCustomer(ContractOverviewDetailsResponseDto dto, LeasingContract leasingContract) {
+    private static void setCustomer(LeasingContractOverviewDetailsResponseDto dto, LeasingContract leasingContract) {
         if (leasingContract.getCustomer() != null) {
             CustomerDetailsResponseDto customerDto = new CustomerDetailsResponseDto();
             if (leasingContract.getCustomer().getFirstName() != null) {
@@ -82,7 +82,7 @@ public interface LeasingContractMapper {
         }
     }
 
-    private static void setVehicle(ContractOverviewDetailsResponseDto dto, LeasingContract leasingContract) {
+    private static void setVehicle(LeasingContractOverviewDetailsResponseDto dto, LeasingContract leasingContract) {
         if (leasingContract.getVehicle() != null) {
             VehicleDetailsResponseDto vehicleDto = new VehicleDetailsResponseDto();
             if (leasingContract.getVehicle().getBrand() != null) {

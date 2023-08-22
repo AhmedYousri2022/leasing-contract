@@ -6,8 +6,8 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import com.allane.leasing.dto.customer.CustomerDetailsResponseDto;
-import com.allane.leasing.dto.leasingcontract.ContractOverviewDetailsResponseDto;
-import com.allane.leasing.dto.leasingcontract.ContractOverviewResponseDto;
+import com.allane.leasing.dto.leasingcontract.LeasingContractOverviewDetailsResponseDto;
+import com.allane.leasing.dto.leasingcontract.LeasingContractOverviewResponseDto;
 import com.allane.leasing.dto.leasingcontract.LeasingContractDetailsResponseDto;
 import com.allane.leasing.dto.leasingcontract.LeasingContractRequestDto;
 import com.allane.leasing.dto.vehicle.VehicleDetailsResponseDto;
@@ -39,13 +39,13 @@ public class LeasingContractService {
     private final LeasingContractMapper leasingContractMapper = Mappers.getMapper(LeasingContractMapper.class);
 
     @Transactional(readOnly = true)
-    public List<ContractOverviewResponseDto> getLeasingContractsOverview() {
+    public List<LeasingContractOverviewResponseDto> getLeasingContractsOverview() {
         List<LeasingContract> leasingContractOverview = leasingContractRepository.findAll();
         return leasingContractOverview.stream().map(leasingContractMapper::toDto).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    public ContractOverviewDetailsResponseDto getLeasingContractsOverviewDetails(UUID leasingContractId) {
+    public LeasingContractOverviewDetailsResponseDto getLeasingContractsOverviewDetails(UUID leasingContractId) {
         LeasingContract leasingContractOverview = getLeasingContract(leasingContractId);
         return leasingContractMapper.toContractOverviewDetailsDto(leasingContractOverview);
     }

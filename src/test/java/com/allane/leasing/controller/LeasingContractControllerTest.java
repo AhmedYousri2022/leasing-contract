@@ -3,14 +3,14 @@ package com.allane.leasing.controller;
 import java.util.List;
 import java.util.UUID;
 
-import com.allane.leasing.dto.leasingcontract.ContractOverviewDetailsResponseDto;
-import com.allane.leasing.dto.leasingcontract.ContractOverviewResponseDto;
+import com.allane.leasing.dto.leasingcontract.LeasingContractOverviewDetailsResponseDto;
+import com.allane.leasing.dto.leasingcontract.LeasingContractOverviewResponseDto;
 import com.allane.leasing.dto.leasingcontract.LeasingContractDetailsResponseDto;
 import com.allane.leasing.dto.leasingcontract.LeasingContractRequestDto;
 import com.allane.leasing.exception.NotFoundException;
 import com.allane.leasing.service.LeasingContractService;
-import com.allane.leasing.stub.leasingcontract.ContractOverviewDetailsResponseDtoStub;
-import com.allane.leasing.stub.leasingcontract.ContractOverviewResponseDtoStub;
+import com.allane.leasing.stub.leasingcontract.LeasingContractOverviewDetailsResponseDtoStub;
+import com.allane.leasing.stub.leasingcontract.LeasingContractOverviewResponseDtoStub;
 import com.allane.leasing.stub.leasingcontract.LeasingContractDetailsResponseDtoStub;
 import com.allane.leasing.stub.leasingcontract.LeasingContractRequestDtoStub;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -42,7 +42,7 @@ class LeasingContractControllerTest {
 
     @Test
     void shouldGetLeasingContractsOverview() throws Exception {
-        ContractOverviewResponseDto responseDto = ContractOverviewResponseDtoStub.getDto();
+        LeasingContractOverviewResponseDto responseDto = LeasingContractOverviewResponseDtoStub.getDto();
 
         given(leasingContractService.getLeasingContractsOverview()).willReturn(List.of(responseDto));
 
@@ -61,7 +61,7 @@ class LeasingContractControllerTest {
     @Test
     void shouldGetLeasingContractOverviewDetails() throws Exception {
         String leasingContractId = "eab78474-3329-42a1-b8b8-b13efd3c5572";
-        ContractOverviewDetailsResponseDto responseDto = ContractOverviewDetailsResponseDtoStub.getDto();
+        LeasingContractOverviewDetailsResponseDto responseDto = LeasingContractOverviewDetailsResponseDtoStub.getDto();
 
         given(leasingContractService.getLeasingContractsOverviewDetails(UUID.fromString(leasingContractId)))
                 .willReturn(responseDto);
