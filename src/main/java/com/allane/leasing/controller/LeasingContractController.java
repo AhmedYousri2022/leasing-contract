@@ -27,7 +27,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/contracts")
-//@Api(value = "leasing service", tags = {"contracts"})
 public class LeasingContractController {
 
     private final LeasingContractService service;

@@ -25,37 +25,32 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/vehicles")
-//@Api(value = "leasing service", tags = {"contracts"})
 public class VehicleController {
 
     private final VehicleService service;
 
-    //    @ApiOperation(value = "Add new Person")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public VehicleDetailsResponseDto addVehicle(@Valid @RequestBody VehicleDetailsRequestDto dto) {
         return service.addVehicleDetails(dto);
     }
 
-    //    @ApiOperation(value = "get person details")
     @GetMapping(path = "/{vehicleId}")
     public VehicleDetailsResponseDto getVehicle(@NotNull @PathVariable UUID vehicleId) {
         return service.getVehicleDetails(vehicleId);
     }
 
     @GetMapping
-    public List<VehicleDetailsResponseDto> getVehicle(@RequestParam boolean assigned) {
+    public List<VehicleDetailsResponseDto> getVehicles(@RequestParam boolean assigned) {
         return service.getAssignedVehicles(assigned);
     }
 
-    //    @ApiOperation(value = "Change a name of a person")
     @PutMapping(path = "/{vehicleId}")
     public VehicleDetailsResponseDto updateVehicle(@NotNull @PathVariable UUID vehicleId,
                                                    @Valid @RequestBody VehicleDetailsRequestDto dto) {
         return service.updateVehicleDetails(vehicleId, dto);
     }
 
-    //    @ApiOperation(value = "delete person")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     @DeleteMapping(path = "/{vehicleId}")
     public void deleteVehicle(@Valid @PathVariable UUID vehicleId) {
