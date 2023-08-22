@@ -1,6 +1,7 @@
 package com.allane.leasing.exception;
 
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.Collection;
 
 import com.allane.leasing.dto.LeasingContractErrorResponseDto;
@@ -24,6 +25,13 @@ public class LeasingContractExceptionHandler {
         log.error("Not found");
         return new ResponseEntity<>(new LeasingContractErrorResponseDto(HttpStatus.NOT_FOUND.value(), e.getMessage(), ZonedDateTime.now()),
                                     HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(DateTimeParseException.class)
+    public ResponseEntity<LeasingContractErrorResponseDto> handleDateTimeParseException(DateTimeParseException e) {
+        log.error("invalid date format");
+        return new ResponseEntity<>(new LeasingContractErrorResponseDto(HttpStatus.BAD_REQUEST.value(), e.getMessage(), ZonedDateTime.now()),
+                                    HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(BadRequestException.class)
