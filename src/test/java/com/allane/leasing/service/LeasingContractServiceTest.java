@@ -32,10 +32,10 @@ class LeasingContractServiceTest {
 
     @Test
     void shouldGetCustomerDetails() {
-        Customer customer = CustomerModelStub.getDto();
+        Customer customer = CustomerModelStub.getModel();
         when(repository.findById(any())).thenReturn(Optional.of(customer));
 
-        CustomerDetailsResponseDto customerDetails = service.getCustomerDetails(CustomerModelStub.getDto().getId());
+        CustomerDetailsResponseDto customerDetails = service.getCustomerDetails(CustomerModelStub.getModel().getId());
 
         assertThat(customerDetails.getFirstName(), is(customer.getFirstName()));
         assertThat(customerDetails.getLastName(), is(customer.getLastName()));
@@ -44,7 +44,7 @@ class LeasingContractServiceTest {
 
     @Test
     void shouldAddCustomerDetails() {
-        Customer customer = CustomerModelStub.getDto();
+        Customer customer = CustomerModelStub.getModel();
         when(repository.save(any())).thenReturn(customer);
 
         CustomerDetailsResponseDto customerDetailsResponseDto = service.addCustomerDetails(
@@ -57,8 +57,8 @@ class LeasingContractServiceTest {
 
     @Test
     void shouldUpdateCustomerDetails() {
-        Customer customer = CustomerModelStub.getDto();
-        Customer updated = CustomerModelStub.getDto();
+        Customer customer = CustomerModelStub.getModel();
+        Customer updated = CustomerModelStub.getModel();
         updated.setFirstName("Mo");
 
         when(repository.findById(any())).thenReturn(Optional.of(customer));

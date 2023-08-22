@@ -33,10 +33,10 @@ class VehicleServiceTest {
 
     @Test
     void shouldGetVehicleDetails() {
-        Vehicle vehicle = VehicleModelStub.getDto();
+        Vehicle vehicle = VehicleModelStub.getModel();
         when(repository.findById(any())).thenReturn(Optional.of(vehicle));
 
-        VehicleDetailsResponseDto vehicleDetails = service.getVehicleDetails(CustomerModelStub.getDto().getId());
+        VehicleDetailsResponseDto vehicleDetails = service.getVehicleDetails(CustomerModelStub.getModel().getId());
 
         assertThat(vehicleDetails.getBrand(), is(vehicle.getBrand()));
         assertThat(vehicleDetails.getModel(), is(vehicle.getModel()));
@@ -47,7 +47,7 @@ class VehicleServiceTest {
 
     @Test
     void shouldAddVehicleDetails() {
-        Vehicle vehicle = VehicleModelStub.getDto();
+        Vehicle vehicle = VehicleModelStub.getModel();
         when(repository.save(any())).thenReturn(vehicle);
 
         VehicleDetailsResponseDto vehicleDetailsResponseDto = service.addVehicleDetails(
@@ -62,8 +62,8 @@ class VehicleServiceTest {
 
     @Test
     void shouldUpdateVehicleDetails() {
-        Vehicle vehicle = VehicleModelStub.getDto();
-        Vehicle updated = VehicleModelStub.getDto();
+        Vehicle vehicle = VehicleModelStub.getModel();
+        Vehicle updated = VehicleModelStub.getModel();
         updated.setModel("AUDI");
 
         when(repository.findById(any())).thenReturn(Optional.of(vehicle));

@@ -11,7 +11,6 @@ import com.allane.leasing.repository.CustomerRepository;
 import com.allane.leasing.stub.customer.CustomerDetailsRequestDtoStub;
 import com.allane.leasing.stub.customer.CustomerModelStub;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -39,7 +38,7 @@ class CustomerServiceIT {
 
     @Test
     void shouldGetCustomerDetails() {
-        Customer customer = repository.save(CustomerModelStub.getDto());
+        Customer customer = repository.save(CustomerModelStub.getModel());
 
         CustomerDetailsResponseDto responseDto = service.getCustomerDetails(customer.getId());
 
@@ -61,7 +60,7 @@ class CustomerServiceIT {
 
     @Test
     void shouldDeleteCustomerDetails() {
-        Customer customer = repository.save(CustomerModelStub.getDto());
+        Customer customer = repository.save(CustomerModelStub.getModel());
 
         service.deleteCustomerDetails(customer.getId());
 
@@ -70,7 +69,7 @@ class CustomerServiceIT {
 
     @Test
     void shouldUpdateCustomerDetails() {
-        Customer customer = repository.save(CustomerModelStub.getDto());
+        Customer customer = repository.save(CustomerModelStub.getModel());
         CustomerDetailsRequestDto dto = CustomerDetailsRequestDtoStub.getDto();
         dto.setFirstName("Mo");
 

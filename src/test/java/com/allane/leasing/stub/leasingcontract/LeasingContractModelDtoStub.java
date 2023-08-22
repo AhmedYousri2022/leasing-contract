@@ -8,13 +8,13 @@ import com.allane.leasing.stub.vehicle.VehicleModelStub;
 
 public class LeasingContractModelDtoStub {
 
-    public static LeasingContract getDto() {
+    public static LeasingContract getModel() {
         LeasingContract leasingContract = new LeasingContract();
 
         leasingContract.setContractNumber(151);
         leasingContract.setMonthlyRate(new BigDecimal("1.5"));
-        leasingContract.setCustomer(CustomerModelStub.getDto());
-        leasingContract.setVehicle(VehicleModelStub.getDto());
+        leasingContract.setCustomer(CustomerModelStub.getModel());
+        leasingContract.setVehicle(VehicleModelStub.getModel());
 
         return leasingContract;
     }

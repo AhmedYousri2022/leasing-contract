@@ -55,9 +55,9 @@ class LeasingContractServiceIT {
 
     @Test
     void shouldGetLeasingContractsOverview() {
-        Customer customer = customerRepository.save(CustomerModelStub.getDto());
-        Vehicle vehicle = vehicleRepository.save(VehicleModelStub.getDto());
-        LeasingContract leasingContractStub = LeasingContractModelDtoStub.getDto();
+        Customer customer = customerRepository.save(CustomerModelStub.getModel());
+        Vehicle vehicle = vehicleRepository.save(VehicleModelStub.getModel());
+        LeasingContract leasingContractStub = LeasingContractModelDtoStub.getModel();
         leasingContractStub.setVehicle(vehicle);
         leasingContractStub.setCustomer(customer);
         LeasingContract leasingContract = repository.save(leasingContractStub);
@@ -75,9 +75,9 @@ class LeasingContractServiceIT {
 
     @Test
     void shouldGetLeasingContractsOverviewDetails() {
-        Customer customer = customerRepository.save(CustomerModelStub.getDto());
-        Vehicle vehicle = vehicleRepository.save(VehicleModelStub.getDto());
-        LeasingContract leasingContractStub = LeasingContractModelDtoStub.getDto();
+        Customer customer = customerRepository.save(CustomerModelStub.getModel());
+        Vehicle vehicle = vehicleRepository.save(VehicleModelStub.getModel());
+        LeasingContract leasingContractStub = LeasingContractModelDtoStub.getModel();
         leasingContractStub.setVehicle(vehicle);
         leasingContractStub.setCustomer(customer);
         LeasingContract leasingContract = repository.save(leasingContractStub);
@@ -90,9 +90,9 @@ class LeasingContractServiceIT {
 
     @Test
     void shouldGetLeasingContractDetails() {
-        Customer customer = customerRepository.save(CustomerModelStub.getDto());
-        Vehicle vehicle = vehicleRepository.save(VehicleModelStub.getDto());
-        LeasingContract leasingContractStub = LeasingContractModelDtoStub.getDto();
+        Customer customer = customerRepository.save(CustomerModelStub.getModel());
+        Vehicle vehicle = vehicleRepository.save(VehicleModelStub.getModel());
+        LeasingContract leasingContractStub = LeasingContractModelDtoStub.getModel();
         leasingContractStub.setVehicle(vehicle);
         leasingContractStub.setCustomer(customer);
         LeasingContract leasingContract = repository.save(leasingContractStub);
@@ -123,8 +123,8 @@ class LeasingContractServiceIT {
 
     @Test
     void shouldCreateLeasingContract() {
-        Customer customer = customerRepository.save(CustomerModelStub.getDto());
-        Vehicle vehicle = vehicleRepository.save(VehicleModelStub.getDto());
+        Customer customer = customerRepository.save(CustomerModelStub.getModel());
+        Vehicle vehicle = vehicleRepository.save(VehicleModelStub.getModel());
 
         LeasingContractRequestDto dto = LeasingContractRequestDtoStub.getDto();
         dto.setVehicleId(vehicle.getId());
@@ -141,8 +141,8 @@ class LeasingContractServiceIT {
 
     @Test
     void shouldThrowVehicleAssignedExceptionWhenCreateLeasingContract() {
-        Customer customer = customerRepository.save(CustomerModelStub.getDto());
-        Vehicle vehicleModel = VehicleModelStub.getDto();
+        Customer customer = customerRepository.save(CustomerModelStub.getModel());
+        Vehicle vehicleModel = VehicleModelStub.getModel();
         vehicleModel.setAssigned(true);
         Vehicle vehicle = vehicleRepository.save(vehicleModel);
 
@@ -160,9 +160,9 @@ class LeasingContractServiceIT {
 
     @Test
     void shouldUpdateContractNumberLeasingContract() {
-        Customer customer = customerRepository.save(CustomerModelStub.getDto());
-        Vehicle vehicle = vehicleRepository.save(VehicleModelStub.getDto());
-        LeasingContract leasingContractStub = LeasingContractModelDtoStub.getDto();
+        Customer customer = customerRepository.save(CustomerModelStub.getModel());
+        Vehicle vehicle = vehicleRepository.save(VehicleModelStub.getModel());
+        LeasingContract leasingContractStub = LeasingContractModelDtoStub.getModel();
         leasingContractStub.setVehicle(vehicle);
         leasingContractStub.setCustomer(customer);
         LeasingContract saved = repository.save(leasingContractStub);
@@ -183,9 +183,9 @@ class LeasingContractServiceIT {
 
     @Test
     void shouldUnassignVehicleLeasingContract() {
-        Customer customer = customerRepository.save(CustomerModelStub.getDto());
-        Vehicle vehicle = vehicleRepository.save(VehicleModelStub.getDto());
-        LeasingContract leasingContractStub = LeasingContractModelDtoStub.getDto();
+        Customer customer = customerRepository.save(CustomerModelStub.getModel());
+        Vehicle vehicle = vehicleRepository.save(VehicleModelStub.getModel());
+        LeasingContract leasingContractStub = LeasingContractModelDtoStub.getModel();
         leasingContractStub.setVehicle(vehicle);
         leasingContractStub.setCustomer(customer);
         LeasingContract saved = repository.save(leasingContractStub);
@@ -206,9 +206,9 @@ class LeasingContractServiceIT {
 
     @Test
     void shouldUnassignVehicleAndCustomerLeasingContract() {
-        Customer customer = customerRepository.save(CustomerModelStub.getDto());
-        Vehicle vehicle = vehicleRepository.save(VehicleModelStub.getDto());
-        LeasingContract leasingContractStub = LeasingContractModelDtoStub.getDto();
+        Customer customer = customerRepository.save(CustomerModelStub.getModel());
+        Vehicle vehicle = vehicleRepository.save(VehicleModelStub.getModel());
+        LeasingContract leasingContractStub = LeasingContractModelDtoStub.getModel();
         leasingContractStub.setVehicle(vehicle);
         leasingContractStub.setCustomer(customer);
         LeasingContract saved = repository.save(leasingContractStub);
@@ -229,9 +229,9 @@ class LeasingContractServiceIT {
 
     @Test
     void shouldThrowVehcileNotFoundWhenUpdateLeasingContract() {
-        Customer customer = customerRepository.save(CustomerModelStub.getDto());
-        Vehicle vehicle = vehicleRepository.save(VehicleModelStub.getDto());
-        LeasingContract leasingContractStub = LeasingContractModelDtoStub.getDto();
+        Customer customer = customerRepository.save(CustomerModelStub.getModel());
+        Vehicle vehicle = vehicleRepository.save(VehicleModelStub.getModel());
+        LeasingContract leasingContractStub = LeasingContractModelDtoStub.getModel();
         leasingContractStub.setVehicle(vehicle);
         leasingContractStub.setCustomer(customer);
         LeasingContract saved = repository.save(leasingContractStub);
@@ -248,9 +248,9 @@ class LeasingContractServiceIT {
 
     @Test
     void shouldThrowCustomerNotFoundWhenUpdateLeasingContract() {
-        Customer customer = customerRepository.save(CustomerModelStub.getDto());
-        Vehicle vehicle = vehicleRepository.save(VehicleModelStub.getDto());
-        LeasingContract leasingContractStub = LeasingContractModelDtoStub.getDto();
+        Customer customer = customerRepository.save(CustomerModelStub.getModel());
+        Vehicle vehicle = vehicleRepository.save(VehicleModelStub.getModel());
+        LeasingContract leasingContractStub = LeasingContractModelDtoStub.getModel();
         leasingContractStub.setVehicle(vehicle);
         leasingContractStub.setCustomer(customer);
         LeasingContract saved = repository.save(leasingContractStub);
@@ -268,13 +268,13 @@ class LeasingContractServiceIT {
 
     @Test
     void shouldThrowAssociatedExceptionWhenUpdateLeasingContract() {
-        Customer customer = customerRepository.save(CustomerModelStub.getDto());
-        Vehicle vehicle = vehicleRepository.save(VehicleModelStub.getDto());
-        Vehicle vehicleModel = VehicleModelStub.getDto();
+        Customer customer = customerRepository.save(CustomerModelStub.getModel());
+        Vehicle vehicle = vehicleRepository.save(VehicleModelStub.getModel());
+        Vehicle vehicleModel = VehicleModelStub.getModel();
         vehicleModel.setAssigned(true);
         Vehicle vehicle2 = vehicleRepository.save(vehicleModel);
 
-        LeasingContract leasingContractStub = LeasingContractModelDtoStub.getDto();
+        LeasingContract leasingContractStub = LeasingContractModelDtoStub.getModel();
         leasingContractStub.setVehicle(vehicle);
         leasingContractStub.setCustomer(customer);
         LeasingContract saved = repository.save(leasingContractStub);

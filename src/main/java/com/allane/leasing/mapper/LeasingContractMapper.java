@@ -1,9 +1,9 @@
 package com.allane.leasing.mapper;
 
 import com.allane.leasing.dto.customer.CustomerDetailsResponseDto;
+import com.allane.leasing.dto.leasingcontract.LeasingContractDetailsResponseDto;
 import com.allane.leasing.dto.leasingcontract.LeasingContractOverviewDetailsResponseDto;
 import com.allane.leasing.dto.leasingcontract.LeasingContractOverviewResponseDto;
-import com.allane.leasing.dto.leasingcontract.LeasingContractDetailsResponseDto;
 import com.allane.leasing.dto.leasingcontract.LeasingContractRequestDto;
 import com.allane.leasing.dto.vehicle.VehicleDetailsResponseDto;
 import com.allane.leasing.model.LeasingContract;
@@ -69,6 +69,7 @@ public interface LeasingContractMapper {
     private static void setCustomer(LeasingContractOverviewDetailsResponseDto dto, LeasingContract leasingContract) {
         if (leasingContract.getCustomer() != null) {
             CustomerDetailsResponseDto customerDto = new CustomerDetailsResponseDto();
+            customerDto.setId(leasingContract.getCustomer().getId());
             if (leasingContract.getCustomer().getFirstName() != null) {
                 customerDto.setFirstName(leasingContract.getCustomer().getFirstName());
             }
@@ -85,6 +86,7 @@ public interface LeasingContractMapper {
     private static void setVehicle(LeasingContractOverviewDetailsResponseDto dto, LeasingContract leasingContract) {
         if (leasingContract.getVehicle() != null) {
             VehicleDetailsResponseDto vehicleDto = new VehicleDetailsResponseDto();
+            vehicleDto.setId(leasingContract.getVehicle().getId());
             if (leasingContract.getVehicle().getBrand() != null) {
                 vehicleDto.setBrand(leasingContract.getVehicle().getBrand());
             }

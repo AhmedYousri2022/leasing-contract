@@ -11,7 +11,6 @@ import com.allane.leasing.repository.VehicleRepository;
 import com.allane.leasing.stub.vehicle.VehicleDetailsRequestDtoStub;
 import com.allane.leasing.stub.vehicle.VehicleModelStub;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -39,7 +38,7 @@ class VehicleServiceIT {
 
     @Test
     void shouldGetVehicleDetails() {
-        Vehicle vehicle = repository.save(VehicleModelStub.getDto());
+        Vehicle vehicle = repository.save(VehicleModelStub.getModel());
 
         VehicleDetailsResponseDto vehicleDetails = service.getVehicleDetails(vehicle.getId());
 
@@ -65,7 +64,7 @@ class VehicleServiceIT {
 
     @Test
     void shouldDeleteVehicleDetails() {
-        Vehicle customer = repository.save(VehicleModelStub.getDto());
+        Vehicle customer = repository.save(VehicleModelStub.getModel());
 
         service.deleteVehicleDetails(customer.getId());
 
@@ -74,7 +73,7 @@ class VehicleServiceIT {
 
     @Test
     void shouldUpdateVehicleDetails() {
-        Vehicle vehicle = repository.save(VehicleModelStub.getDto());
+        Vehicle vehicle = repository.save(VehicleModelStub.getModel());
         VehicleDetailsRequestDto dto = VehicleDetailsRequestDtoStub.getDto();
         dto.setModel("X6");
 

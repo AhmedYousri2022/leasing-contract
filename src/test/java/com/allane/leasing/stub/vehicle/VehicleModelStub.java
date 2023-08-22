@@ -6,7 +6,7 @@ import com.allane.leasing.model.Vehicle;
 
 public class VehicleModelStub {
 
-    public static Vehicle getDto() {
+    public static Vehicle getModel() {
         Vehicle vehicle = new Vehicle();
         vehicle.setId(UUID.fromString("eab78474-3329-42a1-b8b8-b13efd3c5572"));
         vehicle.setBrand("X1");

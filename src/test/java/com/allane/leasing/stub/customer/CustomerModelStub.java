@@ -8,7 +8,7 @@ import com.allane.leasing.model.Customer;
 
 public class CustomerModelStub {
 
-    public static Customer getDto() {
+    public static Customer getModel() {
 
         Customer customer = new Customer();
         customer.setId(UUID.fromString("eab78474-3329-42a1-b8b8-b13efd3c5572"));
