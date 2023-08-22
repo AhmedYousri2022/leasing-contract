@@ -42,7 +42,7 @@ public class Customer {
     private LocalDate birthdate;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "customer")
-    private List<LeasingContract> contracts = new ArrayList<>();
+    private List<LeasingContract> contracts;
 
     public String getCustomerSummary() {
         if (getFirstName() != null && getLastName() != null) {
