@@ -8,6 +8,7 @@ import javax.validation.constraints.NotNull;
 import com.allane.leasing.dto.customer.CustomerDetailsRequestDto;
 import com.allane.leasing.dto.customer.CustomerDetailsResponseDto;
 import com.allane.leasing.service.CustomerService;
+import com.allane.leasing.validation.ValidUUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -34,19 +35,19 @@ public class CustomerController {
     }
 
     @GetMapping(path = "/{customerId}")
-    public CustomerDetailsResponseDto getCustomer(@NotNull @PathVariable UUID customerId) {
+    public CustomerDetailsResponseDto getCustomer(@NotNull @ValidUUID @PathVariable UUID customerId) {
         return service.getCustomerDetails(customerId);
     }
 
     @PutMapping(path = "/{customerId}")
-    public CustomerDetailsResponseDto updateCustomer(@NotNull @PathVariable UUID customerId,
+    public CustomerDetailsResponseDto updateCustomer(@NotNull @ValidUUID @PathVariable UUID customerId,
                                                      @Valid @RequestBody CustomerDetailsRequestDto dto) {
         return service.updateCustomerDetails(customerId, dto);
     }
 
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     @DeleteMapping(path = "/{customerId}")
-    public void deleteCustomer(@Valid @PathVariable UUID customerId) {
+    public void deleteCustomer(@Valid @ValidUUID @PathVariable UUID customerId) {
         service.deleteCustomerDetails(customerId);
     }
 }

@@ -13,6 +13,7 @@ import com.allane.leasing.dto.leasingcontract.LeasingContractDetailsResponseDto;
 import com.allane.leasing.dto.leasingcontract.LeasingContractRequestDto;
 import com.allane.leasing.dto.vehicle.VehicleDetailsResponseDto;
 import com.allane.leasing.service.LeasingContractService;
+import com.allane.leasing.validation.ValidUUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,12 +38,12 @@ public class LeasingContractController {
     }
 
     @GetMapping(path = "/details/{leasingContractId}")
-    public LeasingContractOverviewDetailsResponseDto getLeasingContractOverviewDetails(@NotNull @PathVariable UUID leasingContractId) {
+    public LeasingContractOverviewDetailsResponseDto getLeasingContractOverviewDetails(@NotNull @ValidUUID @PathVariable UUID leasingContractId) {
         return service.getLeasingContractsOverviewDetails(leasingContractId);
     }
 
     @GetMapping(path = "/{leasingContractId}")
-    public LeasingContractDetailsResponseDto getLeasingContract(@NotNull @PathVariable UUID leasingContractId) {
+    public LeasingContractDetailsResponseDto getLeasingContract(@NotNull @ValidUUID @PathVariable UUID leasingContractId) {
         return service.getLeasingContractDetails(leasingContractId);
     }
 
@@ -53,18 +54,18 @@ public class LeasingContractController {
     }
 
     @PutMapping(path = "/{leasingContractId}")
-    public LeasingContractDetailsResponseDto updateLeasingContract(@NotNull @PathVariable UUID leasingContractId,
+    public LeasingContractDetailsResponseDto updateLeasingContract(@NotNull @ValidUUID @PathVariable UUID leasingContractId,
                                                                    @Valid @RequestBody LeasingContractRequestDto dto) {
         return service.updateLeasingContract(leasingContractId, dto);
     }
 
     @GetMapping(path = "/{leasingContractId}/customer")
-    public CustomerDetailsResponseDto getCustomerDetails(@PathVariable UUID leasingContractId) {
+    public CustomerDetailsResponseDto getCustomerDetails(@ValidUUID @PathVariable UUID leasingContractId) {
         return service.getAssignCustomerDetails(leasingContractId);
     }
 
     @GetMapping(path = "/{leasingContractId}/vehicle")
-    public VehicleDetailsResponseDto getVehicleDetails(@PathVariable UUID leasingContractId) {
+    public VehicleDetailsResponseDto getVehicleDetails(@ValidUUID @PathVariable UUID leasingContractId) {
         return service.getAssignedVehicleDetails(leasingContractId);
     }
 }

@@ -9,6 +9,7 @@ import javax.validation.constraints.NotNull;
 import com.allane.leasing.dto.vehicle.VehicleDetailsRequestDto;
 import com.allane.leasing.dto.vehicle.VehicleDetailsResponseDto;
 import com.allane.leasing.service.VehicleService;
+import com.allane.leasing.validation.ValidUUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -36,7 +37,7 @@ public class VehicleController {
     }
 
     @GetMapping(path = "/{vehicleId}")
-    public VehicleDetailsResponseDto getVehicle(@NotNull @PathVariable UUID vehicleId) {
+    public VehicleDetailsResponseDto getVehicle(@ValidUUID @NotNull @PathVariable UUID vehicleId) {
         return service.getVehicleDetails(vehicleId);
     }
 
@@ -46,14 +47,14 @@ public class VehicleController {
     }
 
     @PutMapping(path = "/{vehicleId}")
-    public VehicleDetailsResponseDto updateVehicle(@NotNull @PathVariable UUID vehicleId,
+    public VehicleDetailsResponseDto updateVehicle(@ValidUUID @NotNull @PathVariable UUID vehicleId,
                                                    @Valid @RequestBody VehicleDetailsRequestDto dto) {
         return service.updateVehicleDetails(vehicleId, dto);
     }
 
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     @DeleteMapping(path = "/{vehicleId}")
-    public void deleteVehicle(@Valid @PathVariable UUID vehicleId) {
+    public void deleteVehicle(@ValidUUID @Valid @PathVariable UUID vehicleId) {
         service.deleteVehicleDetails(vehicleId);
     }
 }
