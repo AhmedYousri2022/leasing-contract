@@ -1,7 +1,5 @@
 package com.allane.leasing.service;
 
-import java.util.UUID;
-
 import com.allane.leasing.DatabaseContainer;
 import com.allane.leasing.dto.vehicle.VehicleDetailsRequestDto;
 import com.allane.leasing.dto.vehicle.VehicleDetailsResponseDto;
@@ -40,7 +38,7 @@ class VehicleServiceIT {
     void shouldGetVehicleDetails() {
         Vehicle vehicle = repository.save(VehicleModelStub.getModel());
 
-        VehicleDetailsResponseDto vehicleDetails = service.getVehicleDetails(vehicle.getId());
+        VehicleDetailsResponseDto vehicleDetails = service.getVehicleDetails(vehicle.getId().toString());
 
         assertThat(vehicleDetails.getModel(), is(vehicle.getModel()));
         assertThat(vehicleDetails.getBrand(), is(vehicle.getBrand()));
@@ -66,7 +64,7 @@ class VehicleServiceIT {
     void shouldDeleteVehicleDetails() {
         Vehicle customer = repository.save(VehicleModelStub.getModel());
 
-        service.deleteVehicleDetails(customer.getId());
+        service.deleteVehicleDetails(customer.getId().toString());
 
         assertThat(repository.findAll(), hasSize(0));
     }
@@ -77,7 +75,7 @@ class VehicleServiceIT {
         VehicleDetailsRequestDto dto = VehicleDetailsRequestDtoStub.getDto();
         dto.setModel("X6");
 
-        VehicleDetailsResponseDto responseDto = service.updateVehicleDetails(vehicle.getId(), dto);
+        VehicleDetailsResponseDto responseDto = service.updateVehicleDetails(vehicle.getId().toString(), dto);
 
         assertThat(responseDto.getModel(), is(dto.getModel()));
         assertThat(responseDto.getBrand(), is(dto.getBrand()));
@@ -90,8 +88,7 @@ class VehicleServiceIT {
     void shouldThrowCustomerNotfound() {
         Exception exception = assertThrows(
                 NotFoundException.class,
-                () -> service.updateVehicleDetails(UUID.fromString("5087fb1f-8d57-46e0-9cdb-ad70855f0fc4"),
-                                                   VehicleDetailsRequestDtoStub.getDto()),
+                () -> service.updateVehicleDetails("5087fb1f-8d57-46e0-9cdb-ad70855f0fc4", VehicleDetailsRequestDtoStub.getDto()),
                 "Vehicle not found");
 
         assertThat(exception.getMessage(), is("Vehicle not found"));

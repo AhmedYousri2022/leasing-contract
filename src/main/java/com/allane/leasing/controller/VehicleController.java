@@ -1,10 +1,8 @@
 package com.allane.leasing.controller;
 
 import java.util.List;
-import java.util.UUID;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 
 import com.allane.leasing.dto.vehicle.VehicleDetailsRequestDto;
 import com.allane.leasing.dto.vehicle.VehicleDetailsResponseDto;
@@ -12,6 +10,7 @@ import com.allane.leasing.service.VehicleService;
 import com.allane.leasing.validation.ValidUUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
+@Validated
 @RequestMapping("/vehicles")
 public class VehicleController {
 
@@ -37,7 +37,7 @@ public class VehicleController {
     }
 
     @GetMapping(path = "/{vehicleId}")
-    public VehicleDetailsResponseDto getVehicle(@ValidUUID @NotNull @PathVariable UUID vehicleId) {
+    public VehicleDetailsResponseDto getVehicle(@ValidUUID @PathVariable String vehicleId) {
         return service.getVehicleDetails(vehicleId);
     }
 
@@ -47,14 +47,14 @@ public class VehicleController {
     }
 
     @PutMapping(path = "/{vehicleId}")
-    public VehicleDetailsResponseDto updateVehicle(@ValidUUID @NotNull @PathVariable UUID vehicleId,
+    public VehicleDetailsResponseDto updateVehicle(@ValidUUID @PathVariable String vehicleId,
                                                    @Valid @RequestBody VehicleDetailsRequestDto dto) {
         return service.updateVehicleDetails(vehicleId, dto);
     }
 
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     @DeleteMapping(path = "/{vehicleId}")
-    public void deleteVehicle(@ValidUUID @Valid @PathVariable UUID vehicleId) {
+    public void deleteVehicle(@ValidUUID @PathVariable String vehicleId) {
         service.deleteVehicleDetails(vehicleId);
     }
 }

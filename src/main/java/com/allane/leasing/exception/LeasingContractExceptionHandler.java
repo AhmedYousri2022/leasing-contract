@@ -4,6 +4,8 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.Collection;
 
+import javax.validation.ConstraintViolationException;
+
 import com.allane.leasing.dto.LeasingContractErrorResponseDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -25,6 +27,11 @@ public class LeasingContractExceptionHandler {
         log.error("Not found");
         return new ResponseEntity<>(new LeasingContractErrorResponseDto(HttpStatus.NOT_FOUND.value(), e.getMessage(), ZonedDateTime.now()),
                                     HttpStatus.NOT_FOUND);
+    }
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<LeasingContractErrorResponseDto> handleNotFound(ConstraintViolationException e) {
+        return new ResponseEntity<>(new LeasingContractErrorResponseDto(HttpStatus.BAD_REQUEST.value(), e.getMessage(), ZonedDateTime.now()),
+                                    HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(DateTimeParseException.class)

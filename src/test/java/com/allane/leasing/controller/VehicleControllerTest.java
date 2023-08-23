@@ -1,7 +1,5 @@
 package com.allane.leasing.controller;
 
-import java.util.UUID;
-
 import com.allane.leasing.dto.vehicle.VehicleDetailsRequestDto;
 import com.allane.leasing.dto.vehicle.VehicleDetailsResponseDto;
 import com.allane.leasing.exception.NotFoundException;
@@ -70,8 +68,8 @@ class VehicleControllerTest {
     void shouldGetVehicle() throws Exception {
         String vehicleId = "eab78474-3329-42a1-b8b8-b13efd3c5572";
         VehicleDetailsResponseDto dto = VehicleDetailsResponseDtoStub.getDto();
-        given(service.getVehicleDetails(UUID.fromString(vehicleId)))
-                .willReturn(dto);
+
+        given(service.getVehicleDetails(vehicleId)).willReturn(dto);
 
         mvc.perform(get("/vehicles/" + vehicleId)
                             .accept(MediaType.APPLICATION_JSON))
@@ -89,9 +87,7 @@ class VehicleControllerTest {
     void shouldThrowVehicleNotFound() throws Exception {
         String vehicleId = "eab78474-3329-42a1-b8b8-b13efd3c5572";
 
-        doThrow(new NotFoundException("Vehicle not found"))
-                .when(service)
-                .getVehicleDetails(UUID.fromString(vehicleId));
+        doThrow(new NotFoundException("Vehicle not found")).when(service).getVehicleDetails(vehicleId);
 
         mvc.perform(get("/vehicles/" + vehicleId)
                             .accept(APPLICATION_JSON)
@@ -110,7 +106,7 @@ class VehicleControllerTest {
         dto.setBrand("BMW");
         vehicleRequestDto.setModel("BMW");
 
-        given(service.updateVehicleDetails(UUID.fromString(vehicleId), vehicleRequestDto)).willReturn(dto);
+        given(service.updateVehicleDetails(vehicleId, vehicleRequestDto)).willReturn(dto);
 
         mvc.perform(put("/vehicles/" + vehicleId)
                             .contentType(MediaType.APPLICATION_JSON)
@@ -128,7 +124,7 @@ class VehicleControllerTest {
     @Test
     void shouldDeleteVehicle() throws Exception {
         String vehicleId = "eab78474-3329-42a1-b8b8-b13efd3c5572";
-        doNothing().when(service).deleteVehicleDetails(UUID.fromString(vehicleId));
+        doNothing().when(service).deleteVehicleDetails(vehicleId);
 
         mvc.perform(delete("/vehicles/" + vehicleId)
                             .contentType(MediaType.APPLICATION_JSON)

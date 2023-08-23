@@ -32,27 +32,27 @@ public class VehicleService {
     }
 
     @Transactional(readOnly = true)
-    public VehicleDetailsResponseDto getVehicleDetails(UUID vehicleId) {
+    public VehicleDetailsResponseDto getVehicleDetails(String vehicleId) {
         Vehicle vehicle = getVehicle(vehicleId);
         return vehicleMapper.toResponseDto(vehicle);
     }
 
     @Transactional
-    public void deleteVehicleDetails(UUID vehicleId) {
+    public void deleteVehicleDetails(String vehicleId) {
         Vehicle vehicle = getVehicle(vehicleId);
         vehicleRepository.delete(vehicle);
     }
 
     @Transactional
-    public VehicleDetailsResponseDto updateVehicleDetails(UUID vehicleId, VehicleDetailsRequestDto vehicleDetailsRequestDto) {
+    public VehicleDetailsResponseDto updateVehicleDetails(String vehicleId, VehicleDetailsRequestDto vehicleDetailsRequestDto) {
         Vehicle vehicle = getVehicle(vehicleId);
         vehicleMapper.updateVehicleFromDto(vehicleDetailsRequestDto, vehicle);
         Vehicle saved = vehicleRepository.save(vehicle);
         return vehicleMapper.toResponseDto(saved);
     }
 
-    public Vehicle getVehicle(UUID vehicleId) {
-        return vehicleRepository.findById(vehicleId)
+    public Vehicle getVehicle(String vehicleId) {
+        return vehicleRepository.findById(UUID.fromString(vehicleId))
                 .orElseThrow(() -> new NotFoundException("Vehicle not found"));
     }
 

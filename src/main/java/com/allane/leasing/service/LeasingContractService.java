@@ -6,9 +6,9 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import com.allane.leasing.dto.customer.CustomerDetailsResponseDto;
+import com.allane.leasing.dto.leasingcontract.LeasingContractDetailsResponseDto;
 import com.allane.leasing.dto.leasingcontract.LeasingContractOverviewDetailsResponseDto;
 import com.allane.leasing.dto.leasingcontract.LeasingContractOverviewResponseDto;
-import com.allane.leasing.dto.leasingcontract.LeasingContractDetailsResponseDto;
 import com.allane.leasing.dto.leasingcontract.LeasingContractRequestDto;
 import com.allane.leasing.dto.vehicle.VehicleDetailsResponseDto;
 import com.allane.leasing.exception.AssociatedException;
@@ -45,13 +45,13 @@ public class LeasingContractService {
     }
 
     @Transactional(readOnly = true)
-    public LeasingContractOverviewDetailsResponseDto getLeasingContractsOverviewDetails(UUID leasingContractId) {
+    public LeasingContractOverviewDetailsResponseDto getLeasingContractsOverviewDetails(String leasingContractId) {
         LeasingContract leasingContractOverview = getLeasingContract(leasingContractId);
         return leasingContractMapper.toContractOverviewDetailsDto(leasingContractOverview);
     }
 
     @Transactional(readOnly = true)
-    public LeasingContractDetailsResponseDto getLeasingContractDetails(UUID leasingContractId) {
+    public LeasingContractDetailsResponseDto getLeasingContractDetails(String leasingContractId) {
         LeasingContract leasingContract = getLeasingContract(leasingContractId);
         return leasingContractMapper.toContractDetailsDto(leasingContract);
     }
@@ -74,7 +74,7 @@ public class LeasingContractService {
 
 
     @Transactional
-    public LeasingContractDetailsResponseDto updateLeasingContract(UUID leasingContractId, LeasingContractRequestDto dto) {
+    public LeasingContractDetailsResponseDto updateLeasingContract(String leasingContractId, LeasingContractRequestDto dto) {
         LeasingContract leasingContract = getLeasingContract(leasingContractId);
         setVehicle(dto, leasingContract);
         setCustomer(dto, leasingContract);
@@ -117,7 +117,7 @@ public class LeasingContractService {
 
 
     @Transactional(readOnly = true)
-    public CustomerDetailsResponseDto getAssignCustomerDetails(UUID leasingContractId) {
+    public CustomerDetailsResponseDto getAssignCustomerDetails(String leasingContractId) {
         LeasingContract leasingContract = getLeasingContract(leasingContractId);
 
         if (leasingContract.getCustomer() == null) {
@@ -125,18 +125,18 @@ public class LeasingContractService {
                       leasingContractId);
             throw new AssociatedException("No customer is associated to the contract");
         }
-        return customerService.getCustomerDetails(leasingContract.getCustomer().getId());
+        return customerService.getCustomerDetails(leasingContract.getCustomer().getId().toString());
     }
 
     @Transactional(readOnly = true)
-    public VehicleDetailsResponseDto getAssignedVehicleDetails(UUID leasingContractId) {
+    public VehicleDetailsResponseDto getAssignedVehicleDetails(String leasingContractId) {
         LeasingContract leasingContract = getLeasingContract(leasingContractId);
         if (leasingContract.getVehicle() == null) {
             log.error("No Vehicle is associated to provided contract with leasing Contract Id {}",
                       leasingContractId);
             throw new AssociatedException("No Vehicle is associated to the contract");
         }
-        return vehicleService.getVehicleDetails(leasingContract.getVehicle().getId());
+        return vehicleService.getVehicleDetails(leasingContract.getVehicle().getId().toString());
     }
 
     private void checkAssignedVehicle(Vehicle vehicle) {
@@ -146,8 +146,8 @@ public class LeasingContractService {
         }
     }
 
-    private LeasingContract getLeasingContract(UUID leasingContractId) {
-        return leasingContractRepository.findById(leasingContractId)
+    private LeasingContract getLeasingContract(String leasingContractId) {
+        return leasingContractRepository.findById(UUID.fromString(leasingContractId))
                 .orElseThrow(() -> new NotFoundException("Contract not found"));
     }
 }

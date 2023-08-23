@@ -1,7 +1,6 @@
 package com.allane.leasing.dto.leasingcontract;
 
-import java.util.UUID;
-
+import com.allane.leasing.validation.ValidUUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,7 +16,9 @@ public class LeasingContractRequestDto {
 
     private Double monthlyRate;
 
-    private UUID customerId;
+    @ValidUUID
+    private String customerId;
 
-    private UUID vehicleId;
+    @ValidUUID
+    private String vehicleId;
 }

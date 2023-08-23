@@ -1,7 +1,5 @@
 package com.allane.leasing.service;
 
-import java.util.UUID;
-
 import com.allane.leasing.DatabaseContainer;
 import com.allane.leasing.dto.customer.CustomerDetailsRequestDto;
 import com.allane.leasing.dto.customer.CustomerDetailsResponseDto;
@@ -40,7 +38,7 @@ class CustomerServiceIT {
     void shouldGetCustomerDetails() {
         Customer customer = repository.save(CustomerModelStub.getModel());
 
-        CustomerDetailsResponseDto responseDto = service.getCustomerDetails(customer.getId());
+        CustomerDetailsResponseDto responseDto = service.getCustomerDetails(customer.getId().toString());
 
         assertThat(responseDto.getFirstName(), is(customer.getFirstName()));
         assertThat(responseDto.getLastName(), is(customer.getLastName()));
@@ -62,7 +60,7 @@ class CustomerServiceIT {
     void shouldDeleteCustomerDetails() {
         Customer customer = repository.save(CustomerModelStub.getModel());
 
-        service.deleteCustomerDetails(customer.getId());
+        service.deleteCustomerDetails(customer.getId().toString());
 
         assertThat(repository.findAll(), hasSize(0));
     }
@@ -73,7 +71,7 @@ class CustomerServiceIT {
         CustomerDetailsRequestDto dto = CustomerDetailsRequestDtoStub.getDto();
         dto.setFirstName("Mo");
 
-        CustomerDetailsResponseDto responseDto = service.updateCustomerDetails(customer.getId(), dto);
+        CustomerDetailsResponseDto responseDto = service.updateCustomerDetails(customer.getId().toString(), dto);
 
         assertThat(responseDto.getFirstName(), is(dto.getFirstName()));
         assertThat(responseDto.getLastName(), is(dto.getLastName()));
@@ -84,8 +82,7 @@ class CustomerServiceIT {
     void shouldThrowCustomerNotfound() {
         Exception exception = assertThrows(
                 NotFoundException.class,
-                () -> service.updateCustomerDetails(UUID.fromString("5087fb1f-8d57-46e0-9cdb-ad70855f0fc4"),
-                                                    CustomerDetailsRequestDtoStub.getDto()),
+                () -> service.updateCustomerDetails("5087fb1f-8d57-46e0-9cdb-ad70855f0fc4", CustomerDetailsRequestDtoStub.getDto()),
                 "Customer not found");
 
         assertThat(exception.getMessage(), is("Customer not found"));

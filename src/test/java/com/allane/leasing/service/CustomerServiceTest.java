@@ -1,7 +1,6 @@
 package com.allane.leasing.service;
 
 import java.util.Optional;
-import java.util.UUID;
 
 import com.allane.leasing.dto.customer.CustomerDetailsResponseDto;
 import com.allane.leasing.exception.NotFoundException;
@@ -35,7 +34,7 @@ class CustomerServiceTest {
         Customer customer = CustomerModelStub.getModel();
         when(repository.findById(any())).thenReturn(Optional.of(customer));
 
-        CustomerDetailsResponseDto customerDetails = service.getCustomerDetails(CustomerModelStub.getModel().getId());
+        CustomerDetailsResponseDto customerDetails = service.getCustomerDetails(CustomerModelStub.getModel().getId().toString());
 
         assertThat(customerDetails.getFirstName(), is(customer.getFirstName()));
         assertThat(customerDetails.getLastName(), is(customer.getLastName()));
@@ -65,7 +64,7 @@ class CustomerServiceTest {
         when(repository.save(any())).thenReturn(updated);
 
         CustomerDetailsResponseDto customerDetailsResponseDto = service
-                .updateCustomerDetails(customer.getId(),  CustomerDetailsRequestDtoStub.getDto());
+                .updateCustomerDetails(customer.getId().toString(), CustomerDetailsRequestDtoStub.getDto());
 
         assertThat(customerDetailsResponseDto.getFirstName(), is(updated.getFirstName()));
         assertThat(customerDetailsResponseDto.getLastName(), is(updated.getLastName()));
@@ -75,7 +74,7 @@ class CustomerServiceTest {
     @Test
     void shouldThrowCustomerNotFound() {
         NotFoundException exception = assertThrows(NotFoundException.class,
-                                                   () -> service.deleteCustomerDetails(UUID.fromString("5087fb1f-8d57-46e0-9cdb-ad70855f0fc4")));
+                                                   () -> service.deleteCustomerDetails("5087fb1f-8d57-46e0-9cdb-ad70855f0fc4"));
 
         assertThat(exception.getMessage(), is("Customer not found"));
     }

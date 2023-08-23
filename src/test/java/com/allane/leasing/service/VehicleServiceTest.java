@@ -36,7 +36,7 @@ class VehicleServiceTest {
         Vehicle vehicle = VehicleModelStub.getModel();
         when(repository.findById(any())).thenReturn(Optional.of(vehicle));
 
-        VehicleDetailsResponseDto vehicleDetails = service.getVehicleDetails(CustomerModelStub.getModel().getId());
+        VehicleDetailsResponseDto vehicleDetails = service.getVehicleDetails(CustomerModelStub.getModel().getId().toString());
 
         assertThat(vehicleDetails.getBrand(), is(vehicle.getBrand()));
         assertThat(vehicleDetails.getModel(), is(vehicle.getModel()));
@@ -69,7 +69,7 @@ class VehicleServiceTest {
         when(repository.findById(any())).thenReturn(Optional.of(vehicle));
         when(repository.save(any())).thenReturn(updated);
 
-        VehicleDetailsResponseDto vehicleDetailsResponseDto = service.updateVehicleDetails(vehicle.getId(),
+        VehicleDetailsResponseDto vehicleDetailsResponseDto = service.updateVehicleDetails(vehicle.getId().toString(),
                                                                                            VehicleDetailsRequestDtoStub.getDto());
 
         assertThat(vehicleDetailsResponseDto.getBrand(), is(updated.getBrand()));
@@ -82,8 +82,7 @@ class VehicleServiceTest {
     @Test
     void shouldThrowVehicleNotFound() {
         NotFoundException exception = assertThrows(NotFoundException.class,
-                                                   () -> service.deleteVehicleDetails(
-                                                           UUID.fromString("5087fb1f-8d57-46e0-9cdb-ad70855f0fc4")));
+                                                   () -> service.deleteVehicleDetails("5087fb1f-8d57-46e0-9cdb-ad70855f0fc4"));
 
         assertThat(exception.getMessage(), is("Vehicle not found"));
     }

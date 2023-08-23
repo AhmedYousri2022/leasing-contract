@@ -2,12 +2,11 @@ package com.allane.leasing.service;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.UUID;
 
 import com.allane.leasing.DatabaseContainer;
+import com.allane.leasing.dto.leasingcontract.LeasingContractDetailsResponseDto;
 import com.allane.leasing.dto.leasingcontract.LeasingContractOverviewDetailsResponseDto;
 import com.allane.leasing.dto.leasingcontract.LeasingContractOverviewResponseDto;
-import com.allane.leasing.dto.leasingcontract.LeasingContractDetailsResponseDto;
 import com.allane.leasing.dto.leasingcontract.LeasingContractRequestDto;
 import com.allane.leasing.exception.NotFoundException;
 import com.allane.leasing.exception.VehicleAssignedException;
@@ -83,7 +82,7 @@ class LeasingContractServiceIT {
         LeasingContract leasingContract = repository.save(leasingContractStub);
 
         LeasingContractOverviewDetailsResponseDto overviewDetails = leasingContractService
-                .getLeasingContractsOverviewDetails(leasingContract.getId());
+                .getLeasingContractsOverviewDetails(leasingContract.getId().toString());
 
         assertThat(overviewDetails.getContractNumber(), is(leasingContract.getContractNumber()));
     }
@@ -98,7 +97,7 @@ class LeasingContractServiceIT {
         LeasingContract leasingContract = repository.save(leasingContractStub);
 
         LeasingContractDetailsResponseDto leasingContractDetails = leasingContractService.getLeasingContractDetails(
-                leasingContract.getId());
+                leasingContract.getId().toString());
 
         assertThat(leasingContractDetails.getContractNumber(), is(leasingContract.getContractNumber()));
         assertThat(BigDecimal.valueOf(leasingContractDetails.getMonthlyRate()), is(leasingContract.getMonthlyRate()));
@@ -111,7 +110,7 @@ class LeasingContractServiceIT {
 
     @Test
     void shouldThrowContractNotFoundWhenGetLeasingContractDetails() {
-        UUID nonExistentContractId = UUID.fromString("5087fb1f-8d57-46e0-9cdb-ad70855f0fc4");
+        String nonExistentContractId = "5087fb1f-8d57-46e0-9cdb-ad70855f0fc4";
 
         NotFoundException exception = assertThrows(
                 NotFoundException.class,
@@ -127,8 +126,8 @@ class LeasingContractServiceIT {
         Vehicle vehicle = vehicleRepository.save(VehicleModelStub.getModel());
 
         LeasingContractRequestDto dto = LeasingContractRequestDtoStub.getDto();
-        dto.setVehicleId(vehicle.getId());
-        dto.setCustomerId(customer.getId());
+        dto.setVehicleId(vehicle.getId().toString());
+        dto.setCustomerId(customer.getId().toString());
 
         LeasingContractDetailsResponseDto leasingContract = leasingContractService.createLeasingContract(dto);
 
@@ -147,8 +146,8 @@ class LeasingContractServiceIT {
         Vehicle vehicle = vehicleRepository.save(vehicleModel);
 
         LeasingContractRequestDto dto = LeasingContractRequestDtoStub.getDto();
-        dto.setVehicleId(vehicle.getId());
-        dto.setCustomerId(customer.getId());
+        dto.setVehicleId(vehicle.getId().toString());
+        dto.setCustomerId(customer.getId().toString());
 
         Exception exception = assertThrows(
                 VehicleAssignedException.class,
@@ -168,11 +167,11 @@ class LeasingContractServiceIT {
         LeasingContract saved = repository.save(leasingContractStub);
         LeasingContractRequestDto updatedLeasing = LeasingContractRequestDtoStub.getDto();
         updatedLeasing.setContractNumber(100);
-        updatedLeasing.setVehicleId(vehicle.getId());
-        updatedLeasing.setCustomerId(customer.getId());
+        updatedLeasing.setVehicleId(vehicle.getId().toString());
+        updatedLeasing.setCustomerId(customer.getId().toString());
 
 
-        LeasingContractDetailsResponseDto leasingContract = leasingContractService.updateLeasingContract(saved.getId(), updatedLeasing);
+        LeasingContractDetailsResponseDto leasingContract = leasingContractService.updateLeasingContract(saved.getId().toString(), updatedLeasing);
 
         assertThat(leasingContract.getContractNumber(), is(updatedLeasing.getContractNumber()));
         assertThat(leasingContract.getMonthlyRate(), is(updatedLeasing.getMonthlyRate()));
@@ -192,10 +191,10 @@ class LeasingContractServiceIT {
         LeasingContractRequestDto updatedLeasing = LeasingContractRequestDtoStub.getDto();
         updatedLeasing.setContractNumber(100);
         updatedLeasing.setVehicleId(null);
-        updatedLeasing.setCustomerId(customer.getId());
+        updatedLeasing.setCustomerId(customer.getId().toString());
 
 
-        LeasingContractDetailsResponseDto leasingContract = leasingContractService.updateLeasingContract(saved.getId(), updatedLeasing);
+        LeasingContractDetailsResponseDto leasingContract = leasingContractService.updateLeasingContract(saved.getId().toString(), updatedLeasing);
 
         assertThat(leasingContract.getContractNumber(), is(updatedLeasing.getContractNumber()));
         assertThat(leasingContract.getMonthlyRate(), is(updatedLeasing.getMonthlyRate()));
@@ -218,7 +217,7 @@ class LeasingContractServiceIT {
         updatedLeasing.setCustomerId(null);
 
 
-        LeasingContractDetailsResponseDto leasingContract = leasingContractService.updateLeasingContract(saved.getId(), updatedLeasing);
+        LeasingContractDetailsResponseDto leasingContract = leasingContractService.updateLeasingContract(saved.getId().toString(), updatedLeasing);
 
         assertThat(leasingContract.getContractNumber(), is(updatedLeasing.getContractNumber()));
         assertThat(leasingContract.getMonthlyRate(), is(updatedLeasing.getMonthlyRate()));
@@ -240,7 +239,7 @@ class LeasingContractServiceIT {
 
         Exception exception = assertThrows(
                 NotFoundException.class,
-                () -> leasingContractService.updateLeasingContract(saved.getId(), updatedLeasing),
+                () -> leasingContractService.updateLeasingContract(saved.getId().toString(), updatedLeasing),
                 "Vehicle not found");
 
         assertThat(exception.getMessage(), is("Vehicle not found"));
@@ -256,11 +255,11 @@ class LeasingContractServiceIT {
         LeasingContract saved = repository.save(leasingContractStub);
         LeasingContractRequestDto updatedLeasing = LeasingContractRequestDtoStub.getDto();
         updatedLeasing.setContractNumber(100);
-        updatedLeasing.setCustomerId(customer.getId());
+        updatedLeasing.setCustomerId(customer.getId().toString());
 
         Exception exception = assertThrows(
                 NotFoundException.class,
-                () -> leasingContractService.updateLeasingContract(saved.getId(), updatedLeasing),
+                () -> leasingContractService.updateLeasingContract(saved.getId().toString(), updatedLeasing),
                 "Vehicle not found");
 
         assertThat(exception.getMessage(), is("Vehicle not found"));
@@ -280,13 +279,13 @@ class LeasingContractServiceIT {
         LeasingContract saved = repository.save(leasingContractStub);
         LeasingContractRequestDto updatedLeasing = LeasingContractRequestDtoStub.getDto();
         updatedLeasing.setContractNumber(100);
-        updatedLeasing.setCustomerId(customer.getId());
-        updatedLeasing.setVehicleId(vehicle2.getId());
+        updatedLeasing.setCustomerId(customer.getId().toString());
+        updatedLeasing.setVehicleId(vehicle2.getId().toString());
 
 
         Exception exception = assertThrows(
                 VehicleAssignedException.class,
-                () -> leasingContractService.updateLeasingContract(saved.getId(), updatedLeasing),
+                () -> leasingContractService.updateLeasingContract(saved.getId().toString(), updatedLeasing),
                 "Vehicle already assigned to a contract");
 
         assertThat(exception.getMessage(), is("Vehicle already assigned to a contract"));

@@ -1,17 +1,16 @@
 package com.allane.leasing.controller;
 
 import java.util.List;
-import java.util.UUID;
 
+import com.allane.leasing.dto.leasingcontract.LeasingContractDetailsResponseDto;
 import com.allane.leasing.dto.leasingcontract.LeasingContractOverviewDetailsResponseDto;
 import com.allane.leasing.dto.leasingcontract.LeasingContractOverviewResponseDto;
-import com.allane.leasing.dto.leasingcontract.LeasingContractDetailsResponseDto;
 import com.allane.leasing.dto.leasingcontract.LeasingContractRequestDto;
 import com.allane.leasing.exception.NotFoundException;
 import com.allane.leasing.service.LeasingContractService;
+import com.allane.leasing.stub.leasingcontract.LeasingContractDetailsResponseDtoStub;
 import com.allane.leasing.stub.leasingcontract.LeasingContractOverviewDetailsResponseDtoStub;
 import com.allane.leasing.stub.leasingcontract.LeasingContractOverviewResponseDtoStub;
-import com.allane.leasing.stub.leasingcontract.LeasingContractDetailsResponseDtoStub;
 import com.allane.leasing.stub.leasingcontract.LeasingContractRequestDtoStub;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -63,7 +62,7 @@ class LeasingContractControllerTest {
         String leasingContractId = "eab78474-3329-42a1-b8b8-b13efd3c5572";
         LeasingContractOverviewDetailsResponseDto responseDto = LeasingContractOverviewDetailsResponseDtoStub.getDto();
 
-        given(leasingContractService.getLeasingContractsOverviewDetails(UUID.fromString(leasingContractId)))
+        given(leasingContractService.getLeasingContractsOverviewDetails(leasingContractId))
                 .willReturn(responseDto);
 
         mvc.perform(get("/contracts/details/" + leasingContractId)
@@ -89,7 +88,7 @@ class LeasingContractControllerTest {
         String leasingContractId = "eab78474-3329-42a1-b8b8-b13efd3c5572";
         LeasingContractDetailsResponseDto responseDto = LeasingContractDetailsResponseDtoStub.getDto();
 
-        given(leasingContractService.getLeasingContractDetails(UUID.fromString(leasingContractId)))
+        given(leasingContractService.getLeasingContractDetails(leasingContractId))
                 .willReturn(responseDto);
 
         mvc.perform(get("/contracts/" + leasingContractId)
@@ -164,25 +163,4 @@ class LeasingContractControllerTest {
                 .andExpect(jsonPath("$.zonedDateTime").exists())
                 .andExpect(jsonPath("$.message").value("Vehicle not found"));
     }
-
-    //    @Test
-    //    void shouldUpdateLeasingContract() throws Exception {
-    //        String leasingContractId = "eab78474-3329-42a1-b8b8-b13efd3c5572";
-    //
-    //        LeasingContractUpdateRequestDto dto = LeasingContractUpdateRequestDtoStub.getDto();
-    //        LeasingContractDetailsResponseDto responseDto = LeasingContractDetailsResponseDtoStub.getDto();
-    //        responseDto.setContractNumber(152);
-    //
-    //        given(leasingContractService.updateLeasingContract(UUID.fromString(leasingContractId), dto))
-    //                .willReturn(responseDto);
-    //
-    //        mvc.perform(put("/contracts/" + leasingContractId)
-    //                            .contentType(MediaType.APPLICATION_JSON)
-    //                            .content(objectMapper.writeValueAsString(dto)))
-    //
-    //                .andExpect(status().isOk())
-    //                .andExpect(jsonPath("$.id").exists())
-    //                .andExpect(jsonPath("$.contractNumber").value(152))
-    //                .andExpect(jsonPath("$.monthlyRate").value(dto.getMonthlyRate().toString()));
-    //    }
 }

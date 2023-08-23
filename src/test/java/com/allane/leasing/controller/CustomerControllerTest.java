@@ -1,7 +1,5 @@
 package com.allane.leasing.controller;
 
-import java.util.UUID;
-
 import com.allane.leasing.dto.customer.CustomerDetailsRequestDto;
 import com.allane.leasing.dto.customer.CustomerDetailsResponseDto;
 import com.allane.leasing.exception.NotFoundException;
@@ -68,8 +66,8 @@ class CustomerControllerTest {
     void shouldGetCustomer() throws Exception {
         String customerId = "eab78474-3329-42a1-b8b8-b13efd3c5572";
         CustomerDetailsResponseDto dto = CustomerDetailsResponseDtoStub.getDto();
-        given(service.getCustomerDetails(UUID.fromString(customerId)))
-                .willReturn(dto);
+
+        given(service.getCustomerDetails(customerId)).willReturn(dto);
 
         mvc.perform(get("/customers/" + customerId)
                             .accept(MediaType.APPLICATION_JSON))
@@ -85,9 +83,7 @@ class CustomerControllerTest {
     void shouldThrowCustomerNotFound() throws Exception {
         String customerId = "eab78474-3329-42a1-b8b8-b13efd3c5572";
 
-        doThrow(new NotFoundException("Customer not found"))
-                .when(service)
-                .getCustomerDetails(UUID.fromString(customerId));
+        doThrow(new NotFoundException("Customer not found")).when(service).getCustomerDetails(customerId);
 
         mvc.perform(get("/customers/" + customerId)
                             .accept(APPLICATION_JSON)
@@ -105,7 +101,7 @@ class CustomerControllerTest {
         CustomerDetailsResponseDto dto = CustomerDetailsResponseDtoStub.getDto();
         customerRequestDto.setFirstName("Mido");
 
-        given(service.updateCustomerDetails(UUID.fromString(customerId), customerRequestDto)).willReturn(dto);
+        given(service.updateCustomerDetails(customerId, customerRequestDto)).willReturn(dto);
 
         mvc.perform(put("/customers/" + customerId)
                             .contentType(MediaType.APPLICATION_JSON)
@@ -121,7 +117,7 @@ class CustomerControllerTest {
     @Test
     void shouldDeleteCustomer() throws Exception {
         String customerId = "eab78474-3329-42a1-b8b8-b13efd3c5572";
-        doNothing().when(service).deleteCustomerDetails(UUID.fromString(customerId));
+        doNothing().when(service).deleteCustomerDetails(customerId);
 
         mvc.perform(delete("/customers/" + customerId)
                             .contentType(MediaType.APPLICATION_JSON)

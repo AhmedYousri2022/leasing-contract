@@ -22,7 +22,7 @@ public class CustomerService {
 
     private final CustomerMapper customerMapper = Mappers.getMapper(CustomerMapper.class);
 
-    public CustomerDetailsResponseDto getCustomerDetails(UUID customerId) {
+    public CustomerDetailsResponseDto getCustomerDetails(String customerId) {
         Customer customer = getCustomer(customerId);
         return customerMapper.toDto(customer);
     }
@@ -32,20 +32,20 @@ public class CustomerService {
         return customerMapper.toDto(customer);
     }
 
-    public void deleteCustomerDetails(UUID customerId) {
+    public void deleteCustomerDetails(String customerId) {
         Customer customer = getCustomer(customerId);
         customerRepository.delete(customer);
     }
 
-    public CustomerDetailsResponseDto updateCustomerDetails(UUID customerId, CustomerDetailsRequestDto dto) {
+    public CustomerDetailsResponseDto updateCustomerDetails(String customerId, CustomerDetailsRequestDto dto) {
         Customer customer = getCustomer(customerId);
         customerMapper.updateCustomerFromDto(dto, customer);
         Customer saved = customerRepository.save(customer);
         return customerMapper.toDto(saved);
     }
 
-    public Customer getCustomer(UUID customerId) {
-        return customerRepository.findById(customerId)
+    public Customer getCustomer(String customerId) {
+        return customerRepository.findById(UUID.fromString(customerId))
                 .orElseThrow(() -> new NotFoundException("Customer not found"));
     }
 }
